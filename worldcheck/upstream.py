@@ -197,9 +197,23 @@ def check_shim_fidelity(msswift):
             "real_fields": real, "convention": {k: v for k, v in conv.items()}}
 
 
-def load_adapter(patronus):
-    appworld = str(patronus / "appworld")
-    if appworld not in sys.path:
-        sys.path.insert(0, appworld)
+ADAPTER_MODULES = ["appworld_plugin", "appworld_wm_prompt", "appworld_prompt",
+                   "fix_tool_names_and_schemas"]
+
+_loaded_dirs = []
+
+
+def load_adapter(patronus_or_dir):
+    d = Path(patronus_or_dir)
+    appworld = str(d / "appworld" if (d / "appworld").is_dir() else d)
+    # the adapter imports its siblings by bare name, so only one tree may be on the path at a time
+    for prev in _loaded_dirs:
+        while prev in sys.path:
+            sys.path.remove(prev)
+    _loaded_dirs.clear()
+    for m in ADAPTER_MODULES:
+        sys.modules.pop(m, None)
+    sys.path.insert(0, appworld)
+    _loaded_dirs.append(appworld)
     install_swift_shims()
     return importlib.import_module("appworld_plugin")
