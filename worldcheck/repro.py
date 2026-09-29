@@ -21,7 +21,8 @@ def main():
     row = load_row(patronus, 0)
     prompt = row["wm_system_prompt"]
     cols = collections_in(prompt)
-    songs_total = cols.get("songs")
+    songs_total = cols.get("songs", {}).get("shown")
+    songs_advertised = cols.get("songs", {}).get("total")
 
     # one scheduler for the whole run, matching rollout_mixin instantiating it once per trainer
     scheduler = new_scheduler(plugin)
@@ -51,7 +52,8 @@ def main():
     stop_at = next((p["page_index"] for p in sweep if p["n_returned"] == 0), None)
     before_stop = sum(p["n_returned"] for p in sweep if stop_at is None or p["page_index"] < stop_at)
     cases["ascending_sweep"] = {
-        "library_size": songs_total,
+        "library_size_declared": songs_total,
+        "library_size_advertised": songs_advertised,
         "pages": sweep,
         "records_seen_all_pages": seen,
         "first_empty_page": stop_at,
@@ -155,10 +157,12 @@ def main():
     RESULTS.write_text(json.dumps(out, indent=2) + "\n")
 
     s = cases["ascending_sweep"]
-    print(f"library: {s['library_size']} songs, page_limit 20")
+    print(f"library: {s['library_size_declared']} songs declared "
+          f"({s['library_size_advertised']} advertised), page_limit 20")
     for p in s["pages"]:
         print(f"  page {p['page_index']}: scheduler {p['n_returned']:>2} ids={p['scheduler_ids']} | guard ids={p['guard_ids']}")
-    print(f"agent stops at page {s['first_empty_page']}, having seen {s['records_seen_before_agent_stops']} of {s['library_size']}")
+    print(f"agent stops at page {s['first_empty_page']}, having seen "
+          f"{s['records_seen_before_agent_stops']} of {s['library_size_declared']}")
     print(f"first-ever page 1 empty: {cases['first_call_is_page_1']['empty']} (nothing cached)")
     print(f"results: {RESULTS}")
     return 0

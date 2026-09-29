@@ -5,10 +5,19 @@
   "page_limit_source": "appworld_prompt.py:35",
   "stop_rule_source": "appworld_prompt.py:36",
   "rows": 34,
-  "rows_with_a_collection_over_page_limit": 34,
-  "largest_collection_per_row": [
+  "rows_where_listed_records_exceed_page_limit": 34,
+  "rows_where_prompt_advertises_more_than_it_lists": 16,
+  "total_records_withheld_by_prompts": 1992,
+  "largest_listed_collection_per_row": [
     22,
     27,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
+    30,
     30,
     50,
     50,
@@ -19,28 +28,21 @@
     68,
     69,
     71,
-    71,
     72,
-    75,
     79,
     80,
     80,
-    81,
-    83,
-    83,
-    83,
-    90,
-    93,
-    99,
-    115,
-    124,
-    135,
-    137,
-    151,
-    161,
-    176,
-    242,
-    270
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80,
+    80
   ],
   "collection_frequency": {
     "songs": 20,
@@ -67,538 +69,1213 @@
       "task_id": "692c77d_2",
       "max_turns": 8,
       "collections": {
-        "songs": 80,
-        "albums": 6,
-        "playlists": 6,
-        "artists": 29,
-        "following_artists": 5
+        "songs": {
+          "total": 80,
+          "shown": 80
+        },
+        "albums": {
+          "total": 6,
+          "shown": 6
+        },
+        "playlists": {
+          "total": 6,
+          "shown": 6
+        },
+        "artists": {
+          "total": 29,
+          "shown": 29
+        },
+        "following_artists": {
+          "total": 5,
+          "shown": 5
+        }
       },
-      "over_page_limit": {
-        "songs": 80,
-        "artists": 29
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 80,
+          "shown": 80
+        },
+        "artists": {
+          "total": 29,
+          "shown": 29
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "2a163ab_2",
       "max_turns": 8,
       "collections": {
-        "transactions": 151,
-        "payment_requests": 120,
-        "venmo_friends": 17
+        "transactions": {
+          "total": 151,
+          "shown": 20
+        },
+        "payment_requests": {
+          "total": 120,
+          "shown": 30
+        },
+        "venmo_friends": {
+          "total": 17,
+          "shown": 17
+        }
       },
-      "over_page_limit": {
-        "transactions": 151,
-        "payment_requests": 120
+      "sections_needing_a_second_page": {
+        "payment_requests": {
+          "total": 120,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "transactions": 131,
+        "payment_requests": 90
+      },
+      "records_withheld": 221,
       "has_notes": false
     },
     {
       "task_id": "29caf6f_3",
       "max_turns": 8,
       "collections": {
-        "transactions": 161,
-        "payment_requests": 143,
-        "venmo_friends": 17,
-        "notes": 38
+        "transactions": {
+          "total": 161,
+          "shown": 20
+        },
+        "payment_requests": {
+          "total": 143,
+          "shown": 30
+        },
+        "venmo_friends": {
+          "total": 17,
+          "shown": 17
+        },
+        "notes": {
+          "total": 38,
+          "shown": 30
+        }
       },
-      "over_page_limit": {
-        "transactions": 161,
-        "payment_requests": 143,
-        "notes": 38
+      "sections_needing_a_second_page": {
+        "payment_requests": {
+          "total": 143,
+          "shown": 30
+        },
+        "notes": {
+          "total": 38,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "transactions": 141,
+        "payment_requests": 113,
+        "notes": 8
+      },
+      "records_withheld": 262,
       "has_notes": true
     },
     {
       "task_id": "afc0fce_2",
       "max_turns": 8,
       "collections": {
-        "transactions": 270,
-        "payment_requests": 157,
-        "venmo_friends": 12
+        "transactions": {
+          "total": 270,
+          "shown": 20
+        },
+        "payment_requests": {
+          "total": 157,
+          "shown": 30
+        },
+        "venmo_friends": {
+          "total": 12,
+          "shown": 12
+        }
       },
-      "over_page_limit": {
-        "transactions": 270,
-        "payment_requests": 157
+      "sections_needing_a_second_page": {
+        "payment_requests": {
+          "total": 157,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "transactions": 250,
+        "payment_requests": 127
+      },
+      "records_withheld": 377,
       "has_notes": false
     },
     {
       "task_id": "287e338_3",
       "max_turns": 8,
       "collections": {
-        "songs": 61,
-        "albums": 5,
-        "playlists": 6,
-        "artists": 27,
-        "following_artists": 9
+        "songs": {
+          "total": 61,
+          "shown": 61
+        },
+        "albums": {
+          "total": 5,
+          "shown": 5
+        },
+        "playlists": {
+          "total": 6,
+          "shown": 6
+        },
+        "artists": {
+          "total": 27,
+          "shown": 27
+        },
+        "following_artists": {
+          "total": 9,
+          "shown": 9
+        }
       },
-      "over_page_limit": {
-        "songs": 61,
-        "artists": 27
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 61,
+          "shown": 61
+        },
+        "artists": {
+          "total": 27,
+          "shown": 27
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "27e1026_2",
       "max_turns": 8,
       "collections": {
-        "songs": 83,
-        "albums": 8,
-        "playlists": 5,
-        "artists": 32,
-        "following_artists": 9
+        "songs": {
+          "total": 83,
+          "shown": 80
+        },
+        "albums": {
+          "total": 8,
+          "shown": 8
+        },
+        "playlists": {
+          "total": 5,
+          "shown": 5
+        },
+        "artists": {
+          "total": 32,
+          "shown": 32
+        },
+        "following_artists": {
+          "total": 9,
+          "shown": 9
+        }
       },
-      "over_page_limit": {
-        "songs": 83,
-        "artists": 32
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 83,
+          "shown": 80
+        },
+        "artists": {
+          "total": 32,
+          "shown": 32
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "songs": 3
+      },
+      "records_withheld": 3,
       "has_notes": false
     },
     {
       "task_id": "27e1026_3",
       "max_turns": 8,
       "collections": {
-        "songs": 69,
-        "albums": 6,
-        "playlists": 4,
-        "artists": 29,
-        "following_artists": 7
+        "songs": {
+          "total": 69,
+          "shown": 69
+        },
+        "albums": {
+          "total": 6,
+          "shown": 6
+        },
+        "playlists": {
+          "total": 4,
+          "shown": 4
+        },
+        "artists": {
+          "total": 29,
+          "shown": 29
+        },
+        "following_artists": {
+          "total": 7,
+          "shown": 7
+        }
       },
-      "over_page_limit": {
-        "songs": 69,
-        "artists": 29
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 69,
+          "shown": 69
+        },
+        "artists": {
+          "total": 29,
+          "shown": 29
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "22cc237_1",
       "max_turns": 8,
       "collections": {
-        "transactions": 135,
-        "payment_requests": 110,
-        "venmo_friends": 15,
-        "notes": 37
+        "transactions": {
+          "total": 135,
+          "shown": 20
+        },
+        "payment_requests": {
+          "total": 110,
+          "shown": 30
+        },
+        "venmo_friends": {
+          "total": 15,
+          "shown": 15
+        },
+        "notes": {
+          "total": 37,
+          "shown": 30
+        }
       },
-      "over_page_limit": {
-        "transactions": 135,
-        "payment_requests": 110,
-        "notes": 37
+      "sections_needing_a_second_page": {
+        "payment_requests": {
+          "total": 110,
+          "shown": 30
+        },
+        "notes": {
+          "total": 37,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "transactions": 115,
+        "payment_requests": 80,
+        "notes": 7
+      },
+      "records_withheld": 202,
       "has_notes": true
     },
     {
       "task_id": "b7a9ee9_2",
       "max_turns": 8,
       "collections": {
-        "songs": 90,
-        "albums": 7,
-        "playlists": 8,
-        "artists": 31,
-        "following_artists": 8
+        "songs": {
+          "total": 90,
+          "shown": 80
+        },
+        "albums": {
+          "total": 7,
+          "shown": 7
+        },
+        "playlists": {
+          "total": 8,
+          "shown": 8
+        },
+        "artists": {
+          "total": 31,
+          "shown": 31
+        },
+        "following_artists": {
+          "total": 8,
+          "shown": 8
+        }
       },
-      "over_page_limit": {
-        "songs": 90,
-        "artists": 31
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 90,
+          "shown": 80
+        },
+        "artists": {
+          "total": 31,
+          "shown": 31
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "songs": 10
+      },
+      "records_withheld": 10,
       "has_notes": false
     },
     {
       "task_id": "b7a9ee9_3",
       "max_turns": 8,
       "collections": {
-        "songs": 71,
-        "albums": 6,
-        "playlists": 7,
-        "artists": 27,
-        "following_artists": 6
+        "songs": {
+          "total": 71,
+          "shown": 71
+        },
+        "albums": {
+          "total": 6,
+          "shown": 6
+        },
+        "playlists": {
+          "total": 7,
+          "shown": 7
+        },
+        "artists": {
+          "total": 27,
+          "shown": 27
+        },
+        "following_artists": {
+          "total": 6,
+          "shown": 6
+        }
       },
-      "over_page_limit": {
-        "songs": 71,
-        "artists": 27
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 71,
+          "shown": 71
+        },
+        "artists": {
+          "total": 27,
+          "shown": 27
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "34d9492_1",
       "max_turns": 8,
       "collections": {
-        "directories": 29,
-        "files": 50
+        "directories": {
+          "total": 29,
+          "shown": 29
+        },
+        "files": {
+          "total": 50,
+          "shown": 50
+        }
       },
-      "over_page_limit": {
-        "directories": 29,
-        "files": 50
+      "sections_needing_a_second_page": {
+        "directories": {
+          "total": 29,
+          "shown": 29
+        },
+        "files": {
+          "total": 50,
+          "shown": 50
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "34d9492_3",
       "max_turns": 8,
       "collections": {
-        "directories": 30,
-        "files": 50
+        "directories": {
+          "total": 30,
+          "shown": 30
+        },
+        "files": {
+          "total": 50,
+          "shown": 50
+        }
       },
-      "over_page_limit": {
-        "directories": 30,
-        "files": 50
+      "sections_needing_a_second_page": {
+        "directories": {
+          "total": 30,
+          "shown": 30
+        },
+        "files": {
+          "total": 50,
+          "shown": 50
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "7d7fbf6_2",
       "max_turns": 8,
       "collections": {
-        "directories": 34,
-        "files": 50
+        "directories": {
+          "total": 34,
+          "shown": 34
+        },
+        "files": {
+          "total": 50,
+          "shown": 50
+        }
       },
-      "over_page_limit": {
-        "directories": 34,
-        "files": 50
+      "sections_needing_a_second_page": {
+        "directories": {
+          "total": 34,
+          "shown": 34
+        },
+        "files": {
+          "total": 50,
+          "shown": 50
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "7d7fbf6_3",
       "max_turns": 8,
       "collections": {
-        "directories": 34,
-        "files": 50
+        "directories": {
+          "total": 34,
+          "shown": 34
+        },
+        "files": {
+          "total": 50,
+          "shown": 50
+        }
       },
-      "over_page_limit": {
-        "directories": 34,
-        "files": 50
+      "sections_needing_a_second_page": {
+        "directories": {
+          "total": 34,
+          "shown": 34
+        },
+        "files": {
+          "total": 50,
+          "shown": 50
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "e3d6c94_2",
       "max_turns": 8,
       "collections": {
-        "songs": 83,
-        "albums": 8,
-        "playlists": 8,
-        "artists": 30,
-        "following_artists": 4
+        "songs": {
+          "total": 83,
+          "shown": 80
+        },
+        "albums": {
+          "total": 8,
+          "shown": 8
+        },
+        "playlists": {
+          "total": 8,
+          "shown": 8
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        },
+        "following_artists": {
+          "total": 4,
+          "shown": 4
+        }
       },
-      "over_page_limit": {
-        "songs": 83,
-        "artists": 30
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 83,
+          "shown": 80
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "songs": 3
+      },
+      "records_withheld": 3,
       "has_notes": false
     },
     {
       "task_id": "60d0b5b_1",
       "max_turns": 8,
       "collections": {
-        "transactions": 176,
-        "payment_requests": 113,
-        "venmo_friends": 15
+        "transactions": {
+          "total": 176,
+          "shown": 20
+        },
+        "payment_requests": {
+          "total": 113,
+          "shown": 30
+        },
+        "venmo_friends": {
+          "total": 15,
+          "shown": 15
+        }
       },
-      "over_page_limit": {
-        "transactions": 176,
-        "payment_requests": 113
+      "sections_needing_a_second_page": {
+        "payment_requests": {
+          "total": 113,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "transactions": 156,
+        "payment_requests": 83
+      },
+      "records_withheld": 239,
       "has_notes": false
     },
     {
       "task_id": "07b42fd_1",
       "max_turns": 8,
       "collections": {
-        "songs": 80,
-        "albums": 7,
-        "playlists": 8,
-        "artists": 30
+        "songs": {
+          "total": 80,
+          "shown": 80
+        },
+        "albums": {
+          "total": 7,
+          "shown": 7
+        },
+        "playlists": {
+          "total": 8,
+          "shown": 8
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        }
       },
-      "over_page_limit": {
-        "songs": 80,
-        "artists": 30
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 80,
+          "shown": 80
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "07b42fd_2",
       "max_turns": 8,
       "collections": {
-        "songs": 79,
-        "albums": 4,
-        "playlists": 8,
-        "artists": 33
+        "songs": {
+          "total": 79,
+          "shown": 79
+        },
+        "albums": {
+          "total": 4,
+          "shown": 4
+        },
+        "playlists": {
+          "total": 8,
+          "shown": 8
+        },
+        "artists": {
+          "total": 33,
+          "shown": 33
+        }
       },
-      "over_page_limit": {
-        "songs": 79,
-        "artists": 33
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 79,
+          "shown": 79
+        },
+        "artists": {
+          "total": 33,
+          "shown": 33
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "07b42fd_3",
       "max_turns": 8,
       "collections": {
-        "songs": 68,
-        "albums": 6,
-        "playlists": 6,
-        "artists": 29
+        "songs": {
+          "total": 68,
+          "shown": 68
+        },
+        "albums": {
+          "total": 6,
+          "shown": 6
+        },
+        "playlists": {
+          "total": 6,
+          "shown": 6
+        },
+        "artists": {
+          "total": 29,
+          "shown": 29
+        }
       },
-      "over_page_limit": {
-        "songs": 68,
-        "artists": 29
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 68,
+          "shown": 68
+        },
+        "artists": {
+          "total": 29,
+          "shown": 29
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "cf6abd2_1",
       "max_turns": 8,
       "collections": {
-        "notes": 22
+        "notes": {
+          "total": 22,
+          "shown": 22
+        }
       },
-      "over_page_limit": {
-        "notes": 22
+      "sections_needing_a_second_page": {
+        "notes": {
+          "total": 22,
+          "shown": 22
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": true
     },
     {
       "task_id": "cf6abd2_2",
       "max_turns": 8,
       "collections": {
-        "notes": 27
+        "notes": {
+          "total": 27,
+          "shown": 27
+        }
       },
-      "over_page_limit": {
-        "notes": 27
+      "sections_needing_a_second_page": {
+        "notes": {
+          "total": 27,
+          "shown": 27
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": true
     },
     {
       "task_id": "cf6abd2_3",
       "max_turns": 8,
       "collections": {
-        "notes": 30
+        "notes": {
+          "total": 30,
+          "shown": 30
+        }
       },
-      "over_page_limit": {
-        "notes": 30
+      "sections_needing_a_second_page": {
+        "notes": {
+          "total": 30,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": true
     },
     {
       "task_id": "e7a10f8_2",
       "max_turns": 8,
       "collections": {
-        "songs": 72,
-        "albums": 6,
-        "playlists": 5,
-        "artists": 32,
-        "following_artists": 4
+        "songs": {
+          "total": 72,
+          "shown": 72
+        },
+        "albums": {
+          "total": 6,
+          "shown": 6
+        },
+        "playlists": {
+          "total": 5,
+          "shown": 5
+        },
+        "artists": {
+          "total": 32,
+          "shown": 32
+        },
+        "following_artists": {
+          "total": 4,
+          "shown": 4
+        }
       },
-      "over_page_limit": {
-        "songs": 72,
-        "artists": 32
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 72,
+          "shown": 72
+        },
+        "artists": {
+          "total": 32,
+          "shown": 32
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "c901732_1",
       "max_turns": 8,
       "collections": {
-        "songs": 83,
-        "albums": 4,
-        "playlists": 8,
-        "artists": 31,
-        "following_artists": 3
+        "songs": {
+          "total": 83,
+          "shown": 80
+        },
+        "albums": {
+          "total": 4,
+          "shown": 4
+        },
+        "playlists": {
+          "total": 8,
+          "shown": 8
+        },
+        "artists": {
+          "total": 31,
+          "shown": 31
+        },
+        "following_artists": {
+          "total": 3,
+          "shown": 3
+        }
       },
-      "over_page_limit": {
-        "songs": 83,
-        "artists": 31
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 83,
+          "shown": 80
+        },
+        "artists": {
+          "total": 31,
+          "shown": 31
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "songs": 3
+      },
+      "records_withheld": 3,
       "has_notes": false
     },
     {
       "task_id": "6ea6792_3",
       "max_turns": 8,
       "collections": {
-        "transactions": 124,
-        "payment_requests": 112,
-        "venmo_friends": 17
+        "transactions": {
+          "total": 124,
+          "shown": 20
+        },
+        "payment_requests": {
+          "total": 112,
+          "shown": 30
+        },
+        "venmo_friends": {
+          "total": 17,
+          "shown": 17
+        }
       },
-      "over_page_limit": {
-        "transactions": 124,
-        "payment_requests": 112
+      "sections_needing_a_second_page": {
+        "payment_requests": {
+          "total": 112,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "transactions": 104,
+        "payment_requests": 82
+      },
+      "records_withheld": 186,
       "has_notes": false
     },
     {
       "task_id": "e85d92a_2",
       "max_turns": 8,
       "collections": {
-        "songs": 71,
-        "albums": 7,
-        "playlists": 4,
-        "artists": 29,
-        "following_artists": 4
+        "songs": {
+          "total": 71,
+          "shown": 80
+        },
+        "albums": {
+          "total": 7,
+          "shown": 7
+        },
+        "playlists": {
+          "total": 4,
+          "shown": 4
+        },
+        "artists": {
+          "total": 29,
+          "shown": 29
+        },
+        "following_artists": {
+          "total": 4,
+          "shown": 4
+        }
       },
-      "over_page_limit": {
-        "songs": 71,
-        "artists": 29
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 71,
+          "shown": 80
+        },
+        "artists": {
+          "total": 29,
+          "shown": 29
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "e85d92a_3",
       "max_turns": 8,
       "collections": {
-        "songs": 75,
-        "albums": 8,
-        "playlists": 6,
-        "artists": 25,
-        "following_artists": 7
+        "songs": {
+          "total": 75,
+          "shown": 80
+        },
+        "albums": {
+          "total": 8,
+          "shown": 8
+        },
+        "playlists": {
+          "total": 6,
+          "shown": 6
+        },
+        "artists": {
+          "total": 25,
+          "shown": 25
+        },
+        "following_artists": {
+          "total": 7,
+          "shown": 7
+        }
       },
-      "over_page_limit": {
-        "songs": 75,
-        "artists": 25
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 75,
+          "shown": 80
+        },
+        "artists": {
+          "total": 25,
+          "shown": 25
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "aa8502b_1",
       "max_turns": 8,
       "collections": {
-        "songs": 62,
-        "albums": 5,
-        "playlists": 6,
-        "artists": 30,
-        "following_artists": 10
+        "songs": {
+          "total": 62,
+          "shown": 62
+        },
+        "albums": {
+          "total": 5,
+          "shown": 5
+        },
+        "playlists": {
+          "total": 6,
+          "shown": 6
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        },
+        "following_artists": {
+          "total": 10,
+          "shown": 10
+        }
       },
-      "over_page_limit": {
-        "songs": 62,
-        "artists": 30
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 62,
+          "shown": 62
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {},
+      "records_withheld": 0,
       "has_notes": false
     },
     {
       "task_id": "aa8502b_3",
       "max_turns": 8,
       "collections": {
-        "songs": 99,
-        "albums": 7,
-        "playlists": 8,
-        "artists": 33,
-        "following_artists": 9
+        "songs": {
+          "total": 99,
+          "shown": 80
+        },
+        "albums": {
+          "total": 7,
+          "shown": 7
+        },
+        "playlists": {
+          "total": 8,
+          "shown": 8
+        },
+        "artists": {
+          "total": 33,
+          "shown": 33
+        },
+        "following_artists": {
+          "total": 9,
+          "shown": 9
+        }
       },
-      "over_page_limit": {
-        "songs": 99,
-        "artists": 33
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 99,
+          "shown": 80
+        },
+        "artists": {
+          "total": 33,
+          "shown": 33
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "songs": 19
+      },
+      "records_withheld": 19,
       "has_notes": false
     },
     {
       "task_id": "fac291d_1",
       "max_turns": 8,
       "collections": {
-        "songs": 81,
-        "albums": 8,
-        "playlists": 5,
-        "artists": 31,
-        "following_artists": 6
+        "songs": {
+          "total": 81,
+          "shown": 80
+        },
+        "albums": {
+          "total": 8,
+          "shown": 8
+        },
+        "playlists": {
+          "total": 5,
+          "shown": 5
+        },
+        "artists": {
+          "total": 31,
+          "shown": 31
+        },
+        "following_artists": {
+          "total": 6,
+          "shown": 6
+        }
       },
-      "over_page_limit": {
-        "songs": 81,
-        "artists": 31
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 81,
+          "shown": 80
+        },
+        "artists": {
+          "total": 31,
+          "shown": 31
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "songs": 1
+      },
+      "records_withheld": 1,
       "has_notes": false
     },
     {
       "task_id": "4ec8de5_1",
       "max_turns": 8,
       "collections": {
-        "songs": 115,
-        "albums": 15,
-        "playlists": 5,
-        "artists": 30,
-        "following_artists": 6
+        "songs": {
+          "total": 115,
+          "shown": 80
+        },
+        "albums": {
+          "total": 15,
+          "shown": 15
+        },
+        "playlists": {
+          "total": 5,
+          "shown": 5
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        },
+        "following_artists": {
+          "total": 6,
+          "shown": 6
+        }
       },
-      "over_page_limit": {
-        "songs": 115,
-        "artists": 30
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 115,
+          "shown": 80
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "songs": 35
+      },
+      "records_withheld": 35,
       "has_notes": false
     },
     {
       "task_id": "23cf851_1",
       "max_turns": 8,
       "collections": {
-        "transactions": 242,
-        "payment_requests": 169,
-        "venmo_friends": 14
+        "transactions": {
+          "total": 242,
+          "shown": 20
+        },
+        "payment_requests": {
+          "total": 169,
+          "shown": 30
+        },
+        "venmo_friends": {
+          "total": 14,
+          "shown": 14
+        }
       },
-      "over_page_limit": {
-        "transactions": 242,
-        "payment_requests": 169
+      "sections_needing_a_second_page": {
+        "payment_requests": {
+          "total": 169,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "transactions": 222,
+        "payment_requests": 139
+      },
+      "records_withheld": 361,
       "has_notes": false
     },
     {
       "task_id": "fac291d_2",
       "max_turns": 8,
       "collections": {
-        "songs": 93,
-        "albums": 6,
-        "playlists": 8,
-        "artists": 31,
-        "following_artists": 5
+        "songs": {
+          "total": 93,
+          "shown": 80
+        },
+        "albums": {
+          "total": 6,
+          "shown": 6
+        },
+        "playlists": {
+          "total": 8,
+          "shown": 8
+        },
+        "artists": {
+          "total": 31,
+          "shown": 31
+        },
+        "following_artists": {
+          "total": 5,
+          "shown": 5
+        }
       },
-      "over_page_limit": {
-        "songs": 93,
-        "artists": 31
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 93,
+          "shown": 80
+        },
+        "artists": {
+          "total": 31,
+          "shown": 31
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "songs": 13
+      },
+      "records_withheld": 13,
       "has_notes": false
     },
     {
       "task_id": "4ec8de5_3",
       "max_turns": 8,
       "collections": {
-        "songs": 137,
-        "albums": 18,
-        "playlists": 8,
-        "artists": 30,
-        "following_artists": 6
+        "songs": {
+          "total": 137,
+          "shown": 80
+        },
+        "albums": {
+          "total": 18,
+          "shown": 18
+        },
+        "playlists": {
+          "total": 8,
+          "shown": 8
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        },
+        "following_artists": {
+          "total": 6,
+          "shown": 6
+        }
       },
-      "over_page_limit": {
-        "songs": 137,
-        "artists": 30
+      "sections_needing_a_second_page": {
+        "songs": {
+          "total": 137,
+          "shown": 80
+        },
+        "artists": {
+          "total": 30,
+          "shown": 30
+        }
       },
       "affected": true,
+      "sections_where_prompt_withholds": {
+        "songs": 57
+      },
+      "records_withheld": 57,
       "has_notes": false
     }
   ]

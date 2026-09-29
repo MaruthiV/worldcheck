@@ -96,7 +96,8 @@
   "world_model_calls": 0,
   "cases": {
     "ascending_sweep": {
-      "library_size": 80,
+      "library_size_declared": 80,
+      "library_size_advertised": 80,
       "pages": [
         {
           "page_index": 0,

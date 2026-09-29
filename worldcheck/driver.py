@@ -29,8 +29,11 @@ def credentials_in(prompt):
 
 
 def collections_in(prompt):
-    return {m.group(1): int(m.group(2))
-            for m in re.finditer(r"^\s+(\w+) \((\d+) total", prompt, re.M)}
+    out = {}
+    for m in re.finditer(r"^\s+(\w+) \((\d+) total(?:, (\d+) shown)?\)", prompt, re.M):
+        total = int(m.group(2))
+        out[m.group(1)] = {"total": total, "shown": int(m.group(3)) if m.group(3) else total}
+    return out
 
 
 def ids(payload, key):

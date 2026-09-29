@@ -1,5 +1,6 @@
 import ast
 import importlib
+import os
 import logging
 import subprocess
 import sys
@@ -14,7 +15,8 @@ PATRONUS_COMMIT = "58e6fe0c963ee4256f6bb02ee99f6b47dc3feb2e"
 MSSWIFT_REPO = "https://github.com/modelscope/ms-swift.git"
 MSSWIFT_COMMIT = "43b5d8e3d81493b30959d8ea2dc4c1ddb777e308"
 
-CACHE = Path(__file__).resolve().parent.parent / ".upstream"
+CACHE = Path(os.environ.get("WORLDCHECK_UPSTREAM")
+            or Path(__file__).resolve().parent.parent / ".upstream")
 
 
 def _git(args, cwd=None):
