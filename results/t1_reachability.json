@@ -1,0 +1,605 @@
+{
+  "patronus_commit": "58e6fe0c963ee4256f6bb02ee99f6b47dc3feb2e",
+  "split": "appworld/data/appworld_rl_split_clean.jsonl",
+  "recommended_page_limit": 20,
+  "page_limit_source": "appworld_prompt.py:35",
+  "stop_rule_source": "appworld_prompt.py:36",
+  "rows": 34,
+  "rows_with_a_collection_over_page_limit": 34,
+  "largest_collection_per_row": [
+    22,
+    27,
+    30,
+    50,
+    50,
+    50,
+    50,
+    61,
+    62,
+    68,
+    69,
+    71,
+    71,
+    72,
+    75,
+    79,
+    80,
+    80,
+    81,
+    83,
+    83,
+    83,
+    90,
+    93,
+    99,
+    115,
+    124,
+    135,
+    137,
+    151,
+    161,
+    176,
+    242,
+    270
+  ],
+  "collection_frequency": {
+    "songs": 20,
+    "albums": 20,
+    "playlists": 20,
+    "artists": 20,
+    "following_artists": 17,
+    "transactions": 7,
+    "payment_requests": 7,
+    "venmo_friends": 7,
+    "notes": 5,
+    "directories": 4,
+    "files": 4
+  },
+  "rows_with_notes": [
+    "29caf6f_3",
+    "22cc237_1",
+    "cf6abd2_1",
+    "cf6abd2_2",
+    "cf6abd2_3"
+  ],
+  "per_row": [
+    {
+      "task_id": "692c77d_2",
+      "max_turns": 8,
+      "collections": {
+        "songs": 80,
+        "albums": 6,
+        "playlists": 6,
+        "artists": 29,
+        "following_artists": 5
+      },
+      "over_page_limit": {
+        "songs": 80,
+        "artists": 29
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "2a163ab_2",
+      "max_turns": 8,
+      "collections": {
+        "transactions": 151,
+        "payment_requests": 120,
+        "venmo_friends": 17
+      },
+      "over_page_limit": {
+        "transactions": 151,
+        "payment_requests": 120
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "29caf6f_3",
+      "max_turns": 8,
+      "collections": {
+        "transactions": 161,
+        "payment_requests": 143,
+        "venmo_friends": 17,
+        "notes": 38
+      },
+      "over_page_limit": {
+        "transactions": 161,
+        "payment_requests": 143,
+        "notes": 38
+      },
+      "affected": true,
+      "has_notes": true
+    },
+    {
+      "task_id": "afc0fce_2",
+      "max_turns": 8,
+      "collections": {
+        "transactions": 270,
+        "payment_requests": 157,
+        "venmo_friends": 12
+      },
+      "over_page_limit": {
+        "transactions": 270,
+        "payment_requests": 157
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "287e338_3",
+      "max_turns": 8,
+      "collections": {
+        "songs": 61,
+        "albums": 5,
+        "playlists": 6,
+        "artists": 27,
+        "following_artists": 9
+      },
+      "over_page_limit": {
+        "songs": 61,
+        "artists": 27
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "27e1026_2",
+      "max_turns": 8,
+      "collections": {
+        "songs": 83,
+        "albums": 8,
+        "playlists": 5,
+        "artists": 32,
+        "following_artists": 9
+      },
+      "over_page_limit": {
+        "songs": 83,
+        "artists": 32
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "27e1026_3",
+      "max_turns": 8,
+      "collections": {
+        "songs": 69,
+        "albums": 6,
+        "playlists": 4,
+        "artists": 29,
+        "following_artists": 7
+      },
+      "over_page_limit": {
+        "songs": 69,
+        "artists": 29
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "22cc237_1",
+      "max_turns": 8,
+      "collections": {
+        "transactions": 135,
+        "payment_requests": 110,
+        "venmo_friends": 15,
+        "notes": 37
+      },
+      "over_page_limit": {
+        "transactions": 135,
+        "payment_requests": 110,
+        "notes": 37
+      },
+      "affected": true,
+      "has_notes": true
+    },
+    {
+      "task_id": "b7a9ee9_2",
+      "max_turns": 8,
+      "collections": {
+        "songs": 90,
+        "albums": 7,
+        "playlists": 8,
+        "artists": 31,
+        "following_artists": 8
+      },
+      "over_page_limit": {
+        "songs": 90,
+        "artists": 31
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "b7a9ee9_3",
+      "max_turns": 8,
+      "collections": {
+        "songs": 71,
+        "albums": 6,
+        "playlists": 7,
+        "artists": 27,
+        "following_artists": 6
+      },
+      "over_page_limit": {
+        "songs": 71,
+        "artists": 27
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "34d9492_1",
+      "max_turns": 8,
+      "collections": {
+        "directories": 29,
+        "files": 50
+      },
+      "over_page_limit": {
+        "directories": 29,
+        "files": 50
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "34d9492_3",
+      "max_turns": 8,
+      "collections": {
+        "directories": 30,
+        "files": 50
+      },
+      "over_page_limit": {
+        "directories": 30,
+        "files": 50
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "7d7fbf6_2",
+      "max_turns": 8,
+      "collections": {
+        "directories": 34,
+        "files": 50
+      },
+      "over_page_limit": {
+        "directories": 34,
+        "files": 50
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "7d7fbf6_3",
+      "max_turns": 8,
+      "collections": {
+        "directories": 34,
+        "files": 50
+      },
+      "over_page_limit": {
+        "directories": 34,
+        "files": 50
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "e3d6c94_2",
+      "max_turns": 8,
+      "collections": {
+        "songs": 83,
+        "albums": 8,
+        "playlists": 8,
+        "artists": 30,
+        "following_artists": 4
+      },
+      "over_page_limit": {
+        "songs": 83,
+        "artists": 30
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "60d0b5b_1",
+      "max_turns": 8,
+      "collections": {
+        "transactions": 176,
+        "payment_requests": 113,
+        "venmo_friends": 15
+      },
+      "over_page_limit": {
+        "transactions": 176,
+        "payment_requests": 113
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "07b42fd_1",
+      "max_turns": 8,
+      "collections": {
+        "songs": 80,
+        "albums": 7,
+        "playlists": 8,
+        "artists": 30
+      },
+      "over_page_limit": {
+        "songs": 80,
+        "artists": 30
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "07b42fd_2",
+      "max_turns": 8,
+      "collections": {
+        "songs": 79,
+        "albums": 4,
+        "playlists": 8,
+        "artists": 33
+      },
+      "over_page_limit": {
+        "songs": 79,
+        "artists": 33
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "07b42fd_3",
+      "max_turns": 8,
+      "collections": {
+        "songs": 68,
+        "albums": 6,
+        "playlists": 6,
+        "artists": 29
+      },
+      "over_page_limit": {
+        "songs": 68,
+        "artists": 29
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "cf6abd2_1",
+      "max_turns": 8,
+      "collections": {
+        "notes": 22
+      },
+      "over_page_limit": {
+        "notes": 22
+      },
+      "affected": true,
+      "has_notes": true
+    },
+    {
+      "task_id": "cf6abd2_2",
+      "max_turns": 8,
+      "collections": {
+        "notes": 27
+      },
+      "over_page_limit": {
+        "notes": 27
+      },
+      "affected": true,
+      "has_notes": true
+    },
+    {
+      "task_id": "cf6abd2_3",
+      "max_turns": 8,
+      "collections": {
+        "notes": 30
+      },
+      "over_page_limit": {
+        "notes": 30
+      },
+      "affected": true,
+      "has_notes": true
+    },
+    {
+      "task_id": "e7a10f8_2",
+      "max_turns": 8,
+      "collections": {
+        "songs": 72,
+        "albums": 6,
+        "playlists": 5,
+        "artists": 32,
+        "following_artists": 4
+      },
+      "over_page_limit": {
+        "songs": 72,
+        "artists": 32
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "c901732_1",
+      "max_turns": 8,
+      "collections": {
+        "songs": 83,
+        "albums": 4,
+        "playlists": 8,
+        "artists": 31,
+        "following_artists": 3
+      },
+      "over_page_limit": {
+        "songs": 83,
+        "artists": 31
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "6ea6792_3",
+      "max_turns": 8,
+      "collections": {
+        "transactions": 124,
+        "payment_requests": 112,
+        "venmo_friends": 17
+      },
+      "over_page_limit": {
+        "transactions": 124,
+        "payment_requests": 112
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "e85d92a_2",
+      "max_turns": 8,
+      "collections": {
+        "songs": 71,
+        "albums": 7,
+        "playlists": 4,
+        "artists": 29,
+        "following_artists": 4
+      },
+      "over_page_limit": {
+        "songs": 71,
+        "artists": 29
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "e85d92a_3",
+      "max_turns": 8,
+      "collections": {
+        "songs": 75,
+        "albums": 8,
+        "playlists": 6,
+        "artists": 25,
+        "following_artists": 7
+      },
+      "over_page_limit": {
+        "songs": 75,
+        "artists": 25
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "aa8502b_1",
+      "max_turns": 8,
+      "collections": {
+        "songs": 62,
+        "albums": 5,
+        "playlists": 6,
+        "artists": 30,
+        "following_artists": 10
+      },
+      "over_page_limit": {
+        "songs": 62,
+        "artists": 30
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "aa8502b_3",
+      "max_turns": 8,
+      "collections": {
+        "songs": 99,
+        "albums": 7,
+        "playlists": 8,
+        "artists": 33,
+        "following_artists": 9
+      },
+      "over_page_limit": {
+        "songs": 99,
+        "artists": 33
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "fac291d_1",
+      "max_turns": 8,
+      "collections": {
+        "songs": 81,
+        "albums": 8,
+        "playlists": 5,
+        "artists": 31,
+        "following_artists": 6
+      },
+      "over_page_limit": {
+        "songs": 81,
+        "artists": 31
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "4ec8de5_1",
+      "max_turns": 8,
+      "collections": {
+        "songs": 115,
+        "albums": 15,
+        "playlists": 5,
+        "artists": 30,
+        "following_artists": 6
+      },
+      "over_page_limit": {
+        "songs": 115,
+        "artists": 30
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "23cf851_1",
+      "max_turns": 8,
+      "collections": {
+        "transactions": 242,
+        "payment_requests": 169,
+        "venmo_friends": 14
+      },
+      "over_page_limit": {
+        "transactions": 242,
+        "payment_requests": 169
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "fac291d_2",
+      "max_turns": 8,
+      "collections": {
+        "songs": 93,
+        "albums": 6,
+        "playlists": 8,
+        "artists": 31,
+        "following_artists": 5
+      },
+      "over_page_limit": {
+        "songs": 93,
+        "artists": 31
+      },
+      "affected": true,
+      "has_notes": false
+    },
+    {
+      "task_id": "4ec8de5_3",
+      "max_turns": 8,
+      "collections": {
+        "songs": 137,
+        "albums": 18,
+        "playlists": 8,
+        "artists": 30,
+        "following_artists": 6
+      },
+      "over_page_limit": {
+        "songs": 137,
+        "artists": 30
+      },
+      "affected": true,
+      "has_notes": false
+    }
+  ]
+}

@@ -1,0 +1,365 @@
+{
+  "apps_logged_in": [
+    "file_system",
+    "simple_note",
+    "spotify",
+    "venmo"
+  ],
+  "patronus_commit": "58e6fe0c963ee4256f6bb02ee99f6b47dc3feb2e",
+  "msswift_commit": "43b5d8e3d81493b30959d8ea2dc4c1ddb777e308",
+  "task_id": "692c77d_2",
+  "instruction": "Give a 1-star rating to all songs in my Spotify song library which I have not li",
+  "instruction_note": "truncated; full row text stays upstream and is not republished here",
+  "guard_env": {
+    "APPWORLD_WM_GUARD": "unset, defaults to 1"
+  },
+  "real_dependencies": [
+    "json_repair",
+    "requests",
+    "unmodified upstream appworld adapter"
+  ],
+  "shimmed": {
+    "swift.infer_engine.protocol": [
+      "ChatCompletionResponseChoice",
+      "RolloutInferRequest"
+    ],
+    "swift.rewards": [
+      "ORM",
+      "orms"
+    ],
+    "swift.rollout.multi_turn": [
+      "MultiTurnScheduler",
+      "multi_turns"
+    ],
+    "swift.utils": [
+      "get_logger"
+    ]
+  },
+  "shim_fidelity": {
+    "ok": true,
+    "problems": [],
+    "real_fields": {
+      "RolloutInferRequest": [
+        "audios",
+        "data_dict",
+        "images",
+        "messages",
+        "objects",
+        "tools",
+        "uuid",
+        "videos"
+      ],
+      "ChatCompletionResponseChoice": [
+        "finish_reason",
+        "index",
+        "logprobs",
+        "message",
+        "routed_experts",
+        "token_ids"
+      ],
+      "ChatMessage": [
+        "content",
+        "reasoning_content",
+        "role",
+        "tool_calls"
+      ]
+    },
+    "convention": {
+      "step_signature": [
+        "self",
+        "infer_request",
+        "response_choice",
+        "current_turn"
+      ],
+      "base_init_attrs": [
+        "infer_engine",
+        "_tokenizer",
+        "max_turns"
+      ],
+      "self_step_call_args": [
+        [
+          "current_request",
+          "response_choice",
+          "current_turn"
+        ],
+        [
+          "current_request",
+          "response_choice",
+          "current_turn"
+        ]
+      ],
+      "feed_forward_exprs": [
+        "ret['infer_request']"
+      ]
+    }
+  },
+  "world_model_calls": 0,
+  "cases": {
+    "ascending_sweep": {
+      "library_size": 80,
+      "pages": [
+        {
+          "page_index": 0,
+          "scheduler_ids": [
+            311,
+            36,
+            12,
+            299,
+            276,
+            21,
+            231,
+            173,
+            304,
+            176,
+            313,
+            80,
+            54,
+            33,
+            171,
+            208,
+            265,
+            17,
+            221,
+            285
+          ],
+          "guard_ids": [
+            311,
+            36,
+            12,
+            299,
+            276,
+            21,
+            231,
+            173,
+            304,
+            176,
+            313,
+            80,
+            54,
+            33,
+            171,
+            208,
+            265,
+            17,
+            221,
+            285
+          ],
+          "scheduler_total": 80,
+          "n_returned": 20,
+          "payload_keys": [
+            "songs",
+            "total"
+          ]
+        },
+        {
+          "page_index": 1,
+          "scheduler_ids": [],
+          "guard_ids": [
+            217,
+            317,
+            95,
+            310,
+            45,
+            132,
+            16,
+            223,
+            44,
+            4,
+            131,
+            111,
+            53,
+            256,
+            41,
+            320,
+            262,
+            39,
+            97,
+            190
+          ],
+          "scheduler_total": 80,
+          "n_returned": 0,
+          "payload_keys": [
+            "songs",
+            "total"
+          ]
+        },
+        {
+          "page_index": 2,
+          "scheduler_ids": [],
+          "guard_ids": [
+            319,
+            20,
+            235,
+            18,
+            110,
+            19,
+            232,
+            77,
+            126,
+            78,
+            3,
+            127,
+            32,
+            43,
+            282,
+            57,
+            165,
+            89,
+            30,
+            10
+          ],
+          "scheduler_total": 80,
+          "n_returned": 0,
+          "payload_keys": [
+            "songs",
+            "total"
+          ]
+        },
+        {
+          "page_index": 3,
+          "scheduler_ids": [],
+          "guard_ids": [
+            23,
+            37,
+            247,
+            34,
+            202,
+            42,
+            50,
+            29,
+            22,
+            141,
+            2,
+            239,
+            38,
+            206,
+            104,
+            35,
+            46,
+            79,
+            31,
+            40
+          ],
+          "scheduler_total": 80,
+          "n_returned": 0,
+          "payload_keys": [
+            "songs",
+            "total"
+          ]
+        }
+      ],
+      "records_seen_all_pages": 20,
+      "first_empty_page": 1,
+      "records_seen_before_agent_stops": 20,
+      "agent_stop_rule": "appworld_prompt.py:36 increment page_index until the response is empty"
+    },
+    "first_call_is_page_1": {
+      "scheduler_ids": [],
+      "guard_ids": [
+        217,
+        317,
+        95,
+        310,
+        45,
+        132,
+        16,
+        223,
+        44,
+        4,
+        131,
+        111,
+        53,
+        256,
+        41,
+        320,
+        262,
+        39,
+        97,
+        190
+      ],
+      "empty": true,
+      "total_still_reported": 80
+    },
+    "out_of_order": {
+      "page1_then_page0_ids": [
+        217,
+        317,
+        95,
+        310,
+        45,
+        132,
+        16,
+        223,
+        44,
+        4,
+        131,
+        111,
+        53,
+        256,
+        41,
+        320,
+        262,
+        39,
+        97,
+        190
+      ],
+      "guard_page0_ids": [
+        311,
+        36,
+        12,
+        299,
+        276,
+        21,
+        231,
+        173,
+        304,
+        176,
+        313,
+        80,
+        54,
+        33,
+        171,
+        208,
+        265,
+        17,
+        221,
+        285
+      ],
+      "page1_ids": []
+    },
+    "clamp_divergence": {
+      "page_limit_0": {
+        "scheduler_n": 0,
+        "guard_n": 1
+      },
+      "page_index_negative": {
+        "scheduler_n": 0,
+        "guard_n": 20
+      }
+    },
+    "single_record_truncation": {
+      "playlist_id": 300,
+      "guard_list_fields": {
+        "songs": 8,
+        "song_ids": 8
+      },
+      "scheduler_list_fields": {
+        "songs": 5,
+        "song_ids": 8
+      },
+      "total_injected": true
+    },
+    "read_after_write": {
+      "row_task_id": "29caf6f_3",
+      "note_id": 2704,
+      "title_before": "Book Reading Lists",
+      "update_status": "success",
+      "title_after_update": "Book Reading Lists",
+      "stale_read": true,
+      "update_of_missing_record": "success",
+      "delete_status": "success",
+      "readable_after_delete": true,
+      "classification": "documented design, paper Appendix G, do not report as a defect"
+    }
+  }
+}

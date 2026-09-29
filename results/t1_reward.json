@@ -1,0 +1,46 @@
+{
+  "note": "rewards come from the unmodified AppWorldReward in appworld_plugin.py at the pinned commit",
+  "task_id": "692c77d_2",
+  "instruction": "Give a 1-star rating to all songs in my Spotify song library which I have not li",
+  "instruction_note": "truncated; full row text stays upstream and is not republished here",
+  "ground_truth_present": false,
+  "page_limit": 20,
+  "arms": {
+    "defective": {
+      "records_per_page": [
+        20,
+        0
+      ],
+      "records_seen": 20,
+      "turns": 3,
+      "reward": 0.010499999999999999
+    },
+    "repaired": {
+      "records_per_page": [
+        20,
+        20,
+        20,
+        20,
+        0
+      ],
+      "records_seen": 80,
+      "turns": 6,
+      "reward": 0.010499999999999999
+    }
+  },
+  "single_observation_probes": {
+    "empty_page_with_nonzero_total": 0.009,
+    "explicit_error": 0.0,
+    "all_four_pages_empty": 0.010499999999999999,
+    "full_page": 0.010499999999999999
+  },
+  "reward_gap": 0.0,
+  "reward_distinguishes_them": false,
+  "mechanism": "appworld_plugin.py:583-584 classifies a tool_response as success when its text is non-empty and contains no 'error'. {\"total\": 80, \"songs\": []} satisfies both, so num_success counts it and success_rate stays 1.0 whether the pages carry records or not. reward = success_rate * 0.6 is therefore blind to how much of the collection the agent actually saw.",
+  "limits": [
+    "trajectories are hand-built, not sampled from a trained policy",
+    "absolute rewards are small because these trajectories skip the credential workflow the reward expects",
+    "the supported claim is about the reward's discrimination between arms, not about absolute magnitudes",
+    "no training run was performed, so downstream effect on a trained agent remains unmeasured"
+  ]
+}

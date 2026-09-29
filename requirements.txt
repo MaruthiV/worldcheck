@@ -1,0 +1,2 @@
+json_repair==0.63.5
+requests==2.32.3
