@@ -92,10 +92,12 @@ def run(cmd, log, cwd=None, env=None):
         raise RuntimeError(f"{cmd[:2]} exited {r.returncode}\n{tail}")
 
 
-def wait(url, timeout):
+def wait(url, timeout, proc=None):
     import requests
     end = time.time() + timeout
     while time.time() < end:
+        if proc is not None and proc.poll() is not None:
+            raise RuntimeError(f"server behind {url} exited with {proc.returncode}")
         try:
             if requests.get(url, timeout=5).status_code == 200:
                 return
@@ -112,15 +114,15 @@ def world_model(log):
     procs = [
         subprocess.Popen([sys.executable, "-m", "vllm.entrypoints.openai.api_server", "--model", WM,
                           "--served-model-name", WM_ALIAS, "--port", "30001",
-                          "--gpu-memory-utilization", "0.15", "--max-model-len", "24576"],
+                          "--gpu-memory-utilization", "0.20", "--max-model-len", "24576"],
                          stdout=open(log, "a"), stderr=subprocess.STDOUT),
     ]
     try:
-        wait("http://localhost:30001/health", 1200)
+        wait("http://localhost:30001/health", 1200, procs[0])
         procs.append(subprocess.Popen([sys.executable, "wm_proxy.py"], cwd=AW,
                                       env={**os.environ, "SGLANG_PORT": "30001", "WM_PORT": "30000"},
                                       stdout=open(log, "a"), stderr=subprocess.STDOUT))
-        wait("http://localhost:30000/health", 120)
+        wait("http://localhost:30000/health", 120, procs[1])
         probe = requests.post("http://localhost:30000/predict", timeout=120, json={"input": {
             "state": [], "action": [], "system_prompt": 'Reply with {"ok": true}', "max_tokens": 16}}).json()
         if probe.get("error") or not probe.get("generated_text"):
