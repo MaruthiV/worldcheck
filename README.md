@@ -19,9 +19,11 @@ Picture a driving simulator where every street past the first block is blank, an
 checks that you didn't crash. You pass every lesson and never learn most of the city.
 
 This repo shows that happening on Patronus's own code and data, without a GPU. It includes a fix and
-the first tests that code has had. It also includes a small practice environment for the general
-question behind it: when a simulator makes mistakes, does the training score still rank good agents
-above bad ones?
+the first tests that code has had. It then trains agents with Patronus's own recipe through the broken
+and the fixed code. The bug fires about a hundred times per training run, but the trained agents come
+out the same, because the training score pays nearly full marks for declaring a task done without doing
+it. Finally, a small practice environment measures the general question behind all this: when a
+simulator makes mistakes, does the training score still rank good agents above bad ones?
 
 ## Check it yourself
 
@@ -197,6 +199,122 @@ The patch is generated from exact-text replacements in `worldcheck/fix.py`, each
 the upstream file exactly once, so upstream drift fails loudly instead of misapplying. Applied to the
 pinned checkout, the four-page sweep returns all 80 songs.
 
+## What happens in real training
+
+Everything above uses hand-built sweeps. So I ran Patronus's own training recipe for real: fine-tuning on
+their demonstrations, then GRPO reinforcement learning, on the smallest agent in their paper,
+LFM2.5-1.2B. It ran once through the shipped plugin and once through the fixed one, five times each with
+different random seeds, with everything else identical. Three things came out of it.
+
+**The bug fires constantly.** In every shipped run the agent asked for a later page of some list 209 to
+317 times, and 79 to 108 of those pages held records but came back empty. In the fixed runs, not once.
+
+**Yet the trained agents came out the same.** Training clearly worked: average reward rose from 0.39
+after fine-tuning to 0.60 after GRPO, equally in both versions. But on every measure declared before the
+runs, agents trained through the fixed plugin were indistinguishable from agents trained through the
+shipped one.
+
+**Because training learned to satisfy the score instead of doing the tasks.** On tasks that require
+changing something, like rating songs or accepting payment requests, the trained agents usually logged
+in, looked around and declared the task complete without changing anything. The score pays that almost
+full marks. The share of those task attempts scoring 0.9 or more while changing nothing rose from 17%
+before GRPO to between 38% and 48% after, in every run of both versions. If the score doesn't need the
+task done, fixing what the agent sees can't change what it learns.
+
+So the pagination fix is necessary but not sufficient: the reward is what limits training here. That
+last result was not part of the plan. It came from reading the trained agents' episodes by hand, and it
+is labelled exploratory below.
+
+### How it was run
+
+| | |
+|---|---|
+| Agent | `LiquidAI/LFM2.5-1.2B-Instruct`, one of the three agents in the paper's Table 3 |
+| Recipe | `run_lfm25_sft.sh`, then `run_lfm25_sft_grpo_v2.sh`, unchanged except as listed below |
+| Runs | One fine-tuned checkpoint shared by both versions, then five GRPO seeds per version |
+| World model | Their SDAR model is unreleased (upstream issue #1), so `Qwen/Qwen3-4B-Instruct-2507` stands in, served under the name their `wm_proxy.py` asks for. It was asked 3 to 29 times per run, one of them a startup check, out of 3,300 to 3,900 tool calls; the guard answered the rest |
+| Software | torch 2.10.0, vLLM 0.19.0, transformers 4.57.6, TRL 0.29.1, ms-swift at `43b5d8e`, all from the same weeks as the upstream commit |
+| Hardware | One A100-80GB per run on Modal, about 21 minutes and $1.15 per GRPO run |
+
+Changes from their scripts: fine-tuning uses `appworld_sft_gpt_agent.jsonl`, because the LFM-specific
+file the script names is not in the repo. Fine-tuning `max_length` is 16384 instead of 4096, so no
+demonstration is dropped. The training-time vLLM gets 0.35 of the GPU instead of 0.5, to make room for
+the stand-in model. Logging goes to TensorBoard instead of Weights & Biases.
+
+The design, the measures and the rule for calling a difference real were written down before any
+training run and not changed afterwards. Each trained checkpoint was run 8 times on each of the 34
+training tasks, through both plugins.
+
+### Lost pages during training
+
+Every later-page request in each run's training log was replayed through the guard, which pages
+correctly, and compared with what the plugin actually returned.
+
+| Version | Later-page requests per run | Held records, came back empty | Correctly empty, past the end |
+|---|---|---|---|
+| Shipped | 209 to 317 | **79 to 108** | 100 to 206 |
+| Fixed | 301 to 390 | **0** | 121 to 211 |
+
+The agents trained through the fixed plugin also asked for more later pages, because a page with records
+in it invites the next one.
+
+### The declared comparison
+
+Scored through the fixed plugin, which shows correct pages. A difference counts only if its 95% interval,
+from resampling tasks, excludes zero and at least 4 of the 5 seed pairs agree on its direction.
+
+| Measure | Fine-tuned only | Trained, shipped | Trained, fixed | Fixed minus shipped, 95% interval |
+|---|---|---|---|---|
+| Questions answered exactly right | 0.000 | 0.005 | 0.000 | -0.005, from -0.014 to 0.000 |
+| Sweeps that read past the first page | 0.198 | 0.169 | 0.171 | +0.002, from -0.028 to +0.029 |
+| Highest page requested | 0.37 | 0.26 | 0.22 | -0.04, from -0.12 to +0.02 |
+| Reward | 0.394 | 0.604 | 0.609 | +0.005, from -0.010 to +0.020 |
+| Turns that don't parse as a tool call | 2.4% | 2.8% | 2.7% | -0.1 points, from -0.7 to +0.5 |
+
+No measure passes. Question accuracy was never going to show anything at this size: no agent, fine-tuned
+or trained, answers the questions. That is 0 to 2 correct out of 440 question attempts per group. A
+stronger agent would be needed to test that part.
+
+Scored through the shipped plugin instead, two of the nine measures pass the rule: trained-through-fixed
+agents read past the first page 3.7 points more often (interval +0.5 to +6.4, all five seeds agree), and
+produce slightly fewer unparseable turns. That was not the declared view, and with eighteen comparisons
+two passing could be chance, so it is reported and not claimed.
+
+Training also did not discover the answer-listing trick from earlier: across 240 counting answers per
+group, at most 2 contained more than one number, and those were ordinary sentences.
+
+### Exploratory: finishing without acting
+
+Found by reading episodes, not planned. Among attempts at tasks that need a change of state, the share
+that call `complete_task`, make no call from the guard's own list of state-changing tools
+(`appworld_wm_prompt.py:384-390`), and still score at least 0.9:
+
+| Checkpoint | Through the fixed plugin | Through the shipped plugin |
+|---|---|---|
+| Fine-tuned only | 17% | 18% |
+| Trained through shipped, seeds 0 to 4 | 47, 43, 38, 45, 48% | 36, 42, 39, 41, 46% |
+| Trained through fixed, seeds 0 to 4 | 38, 41, 48, 43, 48% | 46, 42, 42, 38, 48% |
+
+After training, agents call `complete_task` on 94-95% of these tasks, and 91% of those finishes change
+nothing. The reward averages 0.87 to 0.88 for a finish that changes nothing and 0.84 to 0.89 for one that does.
+Every one of the 23 action tasks shows it.
+
+### Limits
+
+- The agents were scored on the same 34 tasks they trained on, through the simulator, not in real
+  AppWorld. The paper's own AppWorld results come from its real-environment evaluation, which this does
+  not reproduce.
+- One small agent, one fine-tuning seed, and a stand-in world model that the guard made almost
+  irrelevant.
+- "Changed nothing" means no call from the guard's list of state-changing tools. Every action task in
+  this split needs one of those tools except one, which asks the agent to play a song. Leaving that task
+  out moves every rate above by at most 2 points.
+
+`python -m gpu.analyze` recomputes all of this from the downloaded logs, and `gpu/grpo.py` is the whole
+training and evaluation job. The raw logs and episodes contain AppWorld-derived records, so they are
+not in this repo; `results/grpo_summary.json` holds the aggregates. The whole arm cost $24.33 on Modal,
+$5.74 of it on a batch of runs that got cancelled part-way and were rerun from scratch.
+
 ## The general question: a practice environment
 
 The AppWorld bug is one instance of a broader problem. If a simulator gets things wrong, does the score
@@ -299,17 +417,17 @@ and the exact pairs in each class, are in `results/calibration.json`.
 
 Measured, and reproduced offline from the upstream's own published rows: the corrupted observations,
 how much of the training data they reach, the reward's blindness to them, the answers it accepts, the
-guard ablation, and the practice-environment results.
+guard ablation, and the practice-environment results. Measured on GPUs with their recipe: how often the
+bug fires during real training, and whether agents trained through the fixed plugin come out different
+(at this size, they don't).
 
-Not measured yet:
+Not measured:
 
-- **The effect on a trained agent.** The real environment is used only for evaluation, never during
-  training, so the evaluation harness itself is sound. Whether an agent trained through the fixed
-  plugin would score differently is untested, in either direction. Two things cut against a large
-  effect: episodes are capped at 8-10 turns, and the training reward is structural. Training runs that
-  compare the two are in progress.
+- **Whether a stronger agent would differ.** The 1.2B agent never answers the question tasks, which is
+  where missing records should matter most. The paper also trains Qwen3-4B and Mistral-7B.
+- **Real AppWorld evaluation of the trained agents.** They were scored through the simulator.
 - **Whether a real world model follows the prompt's pagination rules.** The guard-off version uses a
-  stub, not a trained model.
+  stub, and in training the stand-in model was almost never reached.
 - **Anything about Patronus's hosted Digital World Model.** Everything here is about this repository.
 
 ## Reproducing
@@ -346,5 +464,6 @@ run time.
 | `worldcheck/sim/injector.py` | The six faults |
 | `worldcheck/verify.py` | The seven checks |
 | `worldcheck/policies.py`, `calibrate.py` | The nine agents and the ranking comparison |
+| `gpu/grpo.py`, `gpu/analyze.py` | The training and evaluation job on Modal, and its analysis |
 | `results/` | Committed output of every command above |
 | `tests/` | Everything above, as tests |
