@@ -68,7 +68,8 @@ def ledger(job):
         yield
     finally:
         secs = time.time() - t0
-        (VOL / "ledger" / f"{job}.json").write_text(json.dumps({"job": job, "seconds": round(secs), "usd": round(secs * USD_PER_SEC, 3)}))
+        # timestamped so a retry never hides what a cancelled attempt spent
+        (VOL / "ledger" / f"{job}-{int(t0)}.json").write_text(json.dumps({"job": job, "seconds": round(secs), "usd": round(secs * USD_PER_SEC, 3)}))
         vol.commit()
 
 
@@ -183,6 +184,10 @@ def sft(seed: int = 0):
 def grpo(arm: str, seed: int, init: str):
     name = f"grpo-{arm}-s{seed}"
     out = VOL / "runs" / name
+    # a cancelled attempt would otherwise leak into this run's logs and checkpoints
+    if out.exists():
+        (VOL / "runs" / "_cancelled").mkdir(exist_ok=True)
+        out.rename(VOL / "runs" / "_cancelled" / f"{name}-{int(time.time())}")
     out.mkdir(parents=True, exist_ok=True)
     wd = appworld_dir(arm)
     wm_log = out / "wm_server.txt"
@@ -215,6 +220,7 @@ def grpo(arm: str, seed: int, init: str):
         run(cmd, out / "log.txt", cwd=wd, env=env)
         ck = last_checkpoint(out)
         (out / "provenance.json").write_text(json.dumps({"wm_requests": wm_requests(wm_log)}))
+        (out / "done.json").write_text(json.dumps({"checkpoint": str(ck)}))
     return {"checkpoint": str(ck), "wm_requests": wm_requests(wm_log)}
 
 
@@ -308,6 +314,11 @@ def evaluate(model: str, arm: str, tag: str, samples: int = 8, seed: int = 0):
     return {"tag": tag, "arm": arm, "episodes": len(records)}
 
 
+def finished(arm, seed):
+    run = VOL / "runs" / f"grpo-{arm}-s{seed}"
+    return (run / "done.json").exists() or any(p.name == "checkpoint-68" for p in run.rglob("checkpoint-*"))
+
+
 @app.function(cpu=1.0, memory=2048, timeout=24 * 3600, volumes={"/vol": vol})
 def orchestrate(stage: str, seeds: tuple = (0, 1, 2, 3, 4)):
     vol.reload()
@@ -317,9 +328,8 @@ def orchestrate(stage: str, seeds: tuple = (0, 1, 2, 3, 4)):
         return {"sft": s, "grpo": g, "spent_usd": round(spent(), 2)}
     if stage == "train":
         init = str(last_checkpoint(VOL / "runs" / "sft-s0"))
-        todo = [(arm, s) for arm in ("shipped", "patched") for s in seeds
-                if not list((VOL / "runs" / f"grpo-{arm}-s{s}").rglob("checkpoint-*"))]
-        per_run = json.loads((VOL / "ledger" / "grpo-shipped-s0.json").read_text())["usd"]
+        todo = [(arm, s) for arm in ("shipped", "patched") for s in seeds if not finished(arm, s)]
+        per_run = max(json.loads(p.read_text())["usd"] for p in (VOL / "ledger").glob("grpo-shipped-s0*.json"))
         if spent() + per_run * len(todo) > CAP_USD:
             raise RuntimeError(f"{len(todo)} runs at ${per_run} each would pass the ${CAP_USD} cap")
         outs = list(grpo.starmap([(arm, s, init) for arm, s in todo], return_exceptions=True))
@@ -347,3 +357,9 @@ def main(stage: str = "smoke"):
         print(json.dumps(smoke.remote(), indent=2))
     else:
         print(json.dumps(orchestrate.remote(stage), indent=2))
+
+
+# after `modal deploy gpu/grpo.py`: a call spawned on the deployed app outlives this process and any parent
+if __name__ == "__main__":
+    call = modal.Function.from_name("worldcheck-grpo", "orchestrate").spawn(sys.argv[1])
+    print(call.object_id)
