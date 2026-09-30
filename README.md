@@ -102,6 +102,32 @@ These trajectories are hand-built rather than sampled from a trained agent, and 
 are small because they skip the credential steps the reward expects. The claim is only that the reward
 cannot tell the two apart.
 
+## The score also accepts a list of guesses
+
+Some training tasks are questions with one right answer, like "how many unique songs are across my
+library, albums and playlists?" For these the score checks whether the right answer appears *anywhere*
+in the agent's reply, not whether the reply is the answer. So a reply listing every number from 0 to 100
+gets full marks on every counting question, without the agent looking at any data.
+
+Scored with the unmodified `AppWorldReward` on the 11 question rows of the RL split:
+
+| Reply | 6 counting questions | 5 name questions |
+|---|---|---|
+| The exact answer | 1.0 on all 6 | 1.0 on all 5 |
+| `0 1 2 ... 100`, 293 characters | **1.0 on all 6** | |
+| The answer with a digit in front, `124` for 24 | **1.0 on all 6** | |
+| Off by one, `25` for 24 | 0.23 to 0.25 | |
+| Every title and name on the first page of each Spotify list | | **1.0 on 2**, 0.15 on 3 |
+
+The rule is at `appworld_plugin.py:666`: if `gt.lower() in answer.lower()`, the reward is 1.0. Nothing
+checks the length of the answer or how many candidates it contains, so a wrong number that happens to
+contain the right digits scores four times higher than a nearly right one. The three name questions
+where pasting a list fails are the ones whose answer sits past the first page, which is the part the
+shipped plugin never shows.
+
+This shows the reward can be gamed. It is not evidence that training actually games it. The training
+runs in progress check for exactly that.
+
 ## A better model would not fix this
 
 The upstream README marks the guard "(optional - worth ablation)". This is that ablation: three
@@ -272,8 +298,8 @@ and the exact pairs in each class, are in `results/calibration.json`.
 ## What is measured, and what isn't
 
 Measured, and reproduced offline from the upstream's own published rows: the corrupted observations,
-how much of the training data they reach, the reward's blindness to them, the guard ablation, and the
-practice-environment results.
+how much of the training data they reach, the reward's blindness to them, the answers it accepts, the
+guard ablation, and the practice-environment results.
 
 Not measured yet:
 
@@ -292,6 +318,7 @@ Not measured yet:
 PYTHONPATH=. .venv/bin/python -m worldcheck.repro          # page sweep, out-of-order pages, clamps, truncation
 PYTHONPATH=. .venv/bin/python -m worldcheck.reachability   # how much of the RL split is affected
 PYTHONPATH=. .venv/bin/python -m worldcheck.reward         # what AppWorldReward scores
+PYTHONPATH=. .venv/bin/python -m worldcheck.answers        # which answers it gives full credit
 PYTHONPATH=. .venv/bin/python -m worldcheck.ablation       # the three-version guard ablation
 PYTHONPATH=. .venv/bin/python -m worldcheck.calibrate      # the practice-environment rankings
 ```
@@ -313,7 +340,7 @@ run time.
 |---|---|
 | `worldcheck/upstream.py` | Fetches both pinned repos and checks the ms-swift substitute against the real source |
 | `worldcheck/driver.py` | Drives the upstream scheduler one tool call at a time |
-| `worldcheck/repro.py`, `reachability.py`, `reward.py`, `ablation.py` | The AppWorld measurements |
+| `worldcheck/repro.py`, `reachability.py`, `reward.py`, `answers.py`, `ablation.py` | The AppWorld measurements |
 | `worldcheck/fix.py` | The fix as exact-text replacements; `patches/` is generated from it |
 | `worldcheck/env/` | The practice store: engine, untidy fixtures, tasks and graders |
 | `worldcheck/sim/injector.py` | The six faults |
