@@ -1,7 +1,349 @@
 {
   "decision_rule": "supported if the row-bootstrap 95% interval excludes zero and at least 4 of 5 per-seed differences share its sign",
-  "levels": {},
-  "effects": {},
+  "levels": {
+    "sft-trained, patched plugin": {
+      "question_accuracy": 0.0,
+      "question_accuracy_substring_rule": 0.0,
+      "pages_past_first": 0.1978,
+      "highest_page": 0.3738,
+      "reward": 0.394,
+      "unparsed_turn_rate": 0.0242,
+      "model_observation_rate": 0.0025,
+      "multi_number_answer": 0.0,
+      "answer_chars": 16.9318
+    },
+    "shipped-trained, patched plugin": {
+      "question_accuracy": 0.0045,
+      "question_accuracy_substring_rule": 0.0091,
+      "pages_past_first": 0.1685,
+      "highest_page": 0.2605,
+      "reward": 0.6041,
+      "unparsed_turn_rate": 0.0278,
+      "model_observation_rate": 0.0016,
+      "multi_number_answer": 0.0042,
+      "answer_chars": 16.6773
+    },
+    "patched-trained, patched plugin": {
+      "question_accuracy": 0.0,
+      "question_accuracy_substring_rule": 0.0,
+      "pages_past_first": 0.1709,
+      "highest_page": 0.2174,
+      "reward": 0.6087,
+      "unparsed_turn_rate": 0.027,
+      "model_observation_rate": 0.0021,
+      "multi_number_answer": 0.0042,
+      "answer_chars": 14.2614
+    },
+    "sft-trained, shipped plugin": {
+      "question_accuracy": 0.0,
+      "question_accuracy_substring_rule": 0.0,
+      "pages_past_first": 0.1552,
+      "highest_page": 0.1743,
+      "reward": 0.3941,
+      "unparsed_turn_rate": 0.0226,
+      "model_observation_rate": 0.0014,
+      "multi_number_answer": 0.0,
+      "answer_chars": 17.5455
+    },
+    "shipped-trained, shipped plugin": {
+      "question_accuracy": 0.0,
+      "question_accuracy_substring_rule": 0.0023,
+      "pages_past_first": 0.1581,
+      "highest_page": 0.199,
+      "reward": 0.5982,
+      "unparsed_turn_rate": 0.0319,
+      "model_observation_rate": 0.0012,
+      "multi_number_answer": 0.0083,
+      "answer_chars": 14.9295
+    },
+    "patched-trained, shipped plugin": {
+      "question_accuracy": 0.0023,
+      "question_accuracy_substring_rule": 0.0045,
+      "pages_past_first": 0.1955,
+      "highest_page": 0.2749,
+      "reward": 0.6023,
+      "unparsed_turn_rate": 0.0234,
+      "model_observation_rate": 0.0015,
+      "multi_number_answer": 0.0,
+      "answer_chars": 17.8932
+    }
+  },
+  "effects": {
+    "under the patched plugin": {
+      "question_accuracy": {
+        "patched_minus_shipped": -0.0045,
+        "ci95": [
+          -0.0136,
+          0.0
+        ],
+        "per_seed": [
+          0.0,
+          0.0,
+          -0.0227,
+          0.0,
+          0.0
+        ],
+        "supported": false
+      },
+      "question_accuracy_substring_rule": {
+        "patched_minus_shipped": -0.0091,
+        "ci95": [
+          -0.0273,
+          0.0
+        ],
+        "per_seed": [
+          -0.0227,
+          0.0,
+          -0.0227,
+          0.0,
+          0.0
+        ],
+        "supported": false
+      },
+      "pages_past_first": {
+        "patched_minus_shipped": 0.0024,
+        "ci95": [
+          -0.0276,
+          0.0285
+        ],
+        "per_seed": [
+          -0.0496,
+          0.0374,
+          0.0249,
+          0.0782,
+          -0.0617
+        ],
+        "supported": false
+      },
+      "highest_page": {
+        "patched_minus_shipped": -0.0432,
+        "ci95": [
+          -0.1218,
+          0.0167
+        ],
+        "per_seed": [
+          -0.1072,
+          0.0847,
+          0.033,
+          -0.0011,
+          -0.1723
+        ],
+        "supported": false
+      },
+      "reward": {
+        "patched_minus_shipped": 0.0046,
+        "ci95": [
+          -0.0104,
+          0.0195
+        ],
+        "per_seed": [
+          0.0069,
+          -0.0054,
+          0.0378,
+          -0.0068,
+          -0.0093
+        ],
+        "supported": false
+      },
+      "unparsed_turn_rate": {
+        "patched_minus_shipped": -0.0008,
+        "ci95": [
+          -0.0066,
+          0.0054
+        ],
+        "per_seed": [
+          -0.0071,
+          -0.0095,
+          -0.0071,
+          0.0184,
+          0.0015
+        ],
+        "supported": false
+      },
+      "model_observation_rate": {
+        "patched_minus_shipped": 0.0004,
+        "ci95": [
+          -0.0006,
+          0.0014
+        ],
+        "per_seed": [
+          0.0004,
+          0.0008,
+          0.0002,
+          -0.0008,
+          0.0016
+        ],
+        "supported": false
+      },
+      "multi_number_answer": {
+        "patched_minus_shipped": 0.0,
+        "ci95": [
+          -0.0125,
+          0.0125
+        ],
+        "per_seed": [
+          0.0,
+          0.0,
+          0.0208,
+          0.0,
+          -0.0208
+        ],
+        "supported": false
+      },
+      "answer_chars": {
+        "patched_minus_shipped": -2.4159,
+        "ci95": [
+          -6.55,
+          2.2909
+        ],
+        "per_seed": [
+          -1.3068,
+          1.3295,
+          7.0341,
+          -10.0909,
+          -9.0455
+        ],
+        "supported": false
+      }
+    },
+    "under the shipped plugin": {
+      "question_accuracy": {
+        "patched_minus_shipped": 0.0023,
+        "ci95": [
+          0.0,
+          0.0068
+        ],
+        "per_seed": [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0114
+        ],
+        "supported": false
+      },
+      "question_accuracy_substring_rule": {
+        "patched_minus_shipped": 0.0023,
+        "ci95": [
+          0.0,
+          0.0068
+        ],
+        "per_seed": [
+          0.0,
+          0.0,
+          -0.0114,
+          0.0114,
+          0.0114
+        ],
+        "supported": false
+      },
+      "pages_past_first": {
+        "patched_minus_shipped": 0.0374,
+        "ci95": [
+          0.005,
+          0.0642
+        ],
+        "per_seed": [
+          0.0297,
+          0.0079,
+          0.0106,
+          0.0396,
+          0.0581
+        ],
+        "supported": true
+      },
+      "highest_page": {
+        "patched_minus_shipped": 0.0759,
+        "ci95": [
+          0.016,
+          0.1397
+        ],
+        "per_seed": [
+          0.0601,
+          -0.0059,
+          -0.0864,
+          0.2195,
+          0.118
+        ],
+        "supported": false
+      },
+      "reward": {
+        "patched_minus_shipped": 0.0041,
+        "ci95": [
+          -0.0087,
+          0.0167
+        ],
+        "per_seed": [
+          0.0184,
+          0.0074,
+          0.0,
+          -0.0207,
+          0.0155
+        ],
+        "supported": false
+      },
+      "unparsed_turn_rate": {
+        "patched_minus_shipped": -0.0085,
+        "ci95": [
+          -0.016,
+          -0.0025
+        ],
+        "per_seed": [
+          -0.0144,
+          -0.011,
+          -0.0056,
+          0.0064,
+          -0.0177
+        ],
+        "supported": true
+      },
+      "model_observation_rate": {
+        "patched_minus_shipped": 0.0003,
+        "ci95": [
+          -0.0017,
+          0.0024
+        ],
+        "per_seed": [
+          0.0,
+          -0.0001,
+          0.0,
+          0.0013,
+          0.0004
+        ],
+        "supported": false
+      },
+      "multi_number_answer": {
+        "patched_minus_shipped": -0.0083,
+        "ci95": [
+          -0.0167,
+          0.0
+        ],
+        "per_seed": [
+          0.0,
+          -0.0417,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "supported": false
+      },
+      "answer_chars": {
+        "patched_minus_shipped": 2.9636,
+        "ci95": [
+          -3.4295,
+          8.7545
+        ],
+        "per_seed": [
+          -5.3409,
+          -2.1591,
+          18.8068,
+          5.1818,
+          -1.6705
+        ],
+        "supported": false
+      }
+    }
+  },
   "training_curves": {
     "grpo-shipped-s0": [
       0.212,
@@ -14,6 +356,114 @@
       0.225,
       0.252,
       0.219
+    ],
+    "grpo-shipped-s1": [
+      0.067,
+      0.134,
+      0.097,
+      0.246,
+      0.246,
+      0.112,
+      0.194,
+      0.164,
+      0.187,
+      0.209
+    ],
+    "grpo-shipped-s2": [
+      0.227,
+      0.318,
+      0.073,
+      0.145,
+      0.245,
+      0.145,
+      0.355,
+      0.164,
+      0.218,
+      0.218
+    ],
+    "grpo-shipped-s3": [
+      0.087,
+      0.048,
+      0.151,
+      0.246,
+      0.143,
+      0.175,
+      0.167,
+      0.262,
+      0.183,
+      0.167
+    ],
+    "grpo-shipped-s4": [
+      0.169,
+      0.199,
+      0.154,
+      0.125,
+      0.199,
+      0.125,
+      0.162,
+      0.132,
+      0.206,
+      0.125
+    ],
+    "grpo-patched-s0": [
+      0.215,
+      0.415,
+      0.231,
+      0.331,
+      0.162,
+      0.154,
+      0.223,
+      0.123,
+      0.262,
+      0.169
+    ],
+    "grpo-patched-s1": [
+      0.161,
+      0.226,
+      0.234,
+      0.355,
+      0.339,
+      0.202,
+      0.226,
+      0.153,
+      0.298,
+      0.274
+    ],
+    "grpo-patched-s2": [
+      0.201,
+      0.268,
+      0.047,
+      0.174,
+      0.416,
+      0.087,
+      0.255,
+      0.221,
+      0.242,
+      0.101
+    ],
+    "grpo-patched-s3": [
+      0.075,
+      0.149,
+      0.224,
+      0.381,
+      0.418,
+      0.149,
+      0.284,
+      0.306,
+      0.306,
+      0.134
+    ],
+    "grpo-patched-s4": [
+      0.322,
+      0.349,
+      0.296,
+      0.257,
+      0.355,
+      0.164,
+      0.243,
+      0.25,
+      0.125,
+      0.145
     ]
   },
   "live_page_losses": {
@@ -22,6 +472,89 @@
       "held_records_but_came_back_empty": 102,
       "correctly_empty": 206,
       "other": 9
+    },
+    "grpo-shipped-s1": {
+      "later_page_requests": 234,
+      "held_records_but_came_back_empty": 108,
+      "correctly_empty": 121,
+      "other": 5
+    },
+    "grpo-shipped-s2": {
+      "later_page_requests": 247,
+      "held_records_but_came_back_empty": 98,
+      "correctly_empty": 136,
+      "other": 13
+    },
+    "grpo-shipped-s3": {
+      "later_page_requests": 209,
+      "held_records_but_came_back_empty": 105,
+      "correctly_empty": 100,
+      "other": 4
+    },
+    "grpo-shipped-s4": {
+      "later_page_requests": 240,
+      "held_records_but_came_back_empty": 79,
+      "correctly_empty": 137,
+      "other": 24
+    },
+    "grpo-patched-s0": {
+      "later_page_requests": 301,
+      "held_records_but_came_back_empty": 0,
+      "correctly_empty": 202,
+      "other": 99
+    },
+    "grpo-patched-s1": {
+      "later_page_requests": 309,
+      "held_records_but_came_back_empty": 0,
+      "correctly_empty": 142,
+      "other": 167
+    },
+    "grpo-patched-s2": {
+      "later_page_requests": 307,
+      "held_records_but_came_back_empty": 0,
+      "correctly_empty": 121,
+      "other": 186
+    },
+    "grpo-patched-s3": {
+      "later_page_requests": 332,
+      "held_records_but_came_back_empty": 0,
+      "correctly_empty": 150,
+      "other": 182
+    },
+    "grpo-patched-s4": {
+      "later_page_requests": 390,
+      "held_records_but_came_back_empty": 0,
+      "correctly_empty": 211,
+      "other": 179
+    }
+  },
+  "exploratory_finishing_without_acting": {
+    "note": "not predeclared; found by reading episodes. share of action-task episodes that call complete_task, make no call from the guard's own mutation_prefixes, and still score >= 0.9",
+    "patched": {
+      "sft-s0": 0.1739,
+      "grpo-shipped-s0": 0.4674,
+      "grpo-shipped-s1": 0.4348,
+      "grpo-shipped-s2": 0.375,
+      "grpo-shipped-s3": 0.4511,
+      "grpo-shipped-s4": 0.4837,
+      "grpo-patched-s0": 0.3804,
+      "grpo-patched-s1": 0.413,
+      "grpo-patched-s2": 0.4783,
+      "grpo-patched-s3": 0.4293,
+      "grpo-patched-s4": 0.4837
+    },
+    "shipped": {
+      "sft-s0": 0.1793,
+      "grpo-shipped-s0": 0.3641,
+      "grpo-shipped-s1": 0.4239,
+      "grpo-shipped-s2": 0.3913,
+      "grpo-shipped-s3": 0.413,
+      "grpo-shipped-s4": 0.4565,
+      "grpo-patched-s0": 0.4565,
+      "grpo-patched-s1": 0.4185,
+      "grpo-patched-s2": 0.4239,
+      "grpo-patched-s3": 0.375,
+      "grpo-patched-s4": 0.4783
     }
   }
 }

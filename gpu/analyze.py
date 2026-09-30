@@ -94,6 +94,24 @@ def training_curve(arm, seed, bins=10):
             for i in range(0, size * bins, size) if calls[i:i + size]]
 
 
+# appworld_wm_prompt.py:384-390, the guard's own list of tools that change state
+MUTATION_PREFIXES = (
+    "spotify__like_", "spotify__unlike_", "spotify__review_", "spotify__create_", "spotify__add_", "spotify__remove_",
+    "spotify__follow_", "spotify__download_", "venmo__create_", "venmo__approve_", "venmo__like_", "venmo__remind_",
+    "venmo__deny_", "phone__send_", "phone__delete_", "file_system__create_", "file_system__move_",
+    "file_system__delete_", "file_system__compress_", "simple_note__update_", "simple_note__create_",
+    "simple_note__delete_")
+
+
+def finished_without_acting(eps):
+    if not eps:
+        return None
+    acts = [e for e in eps if not e["ground_truth"]]
+    hit = [e for e in acts if "supervisor__complete_task" in e["tools"] and e["reward"] >= 0.9
+           and not any(t and t.startswith(MUTATION_PREFIXES) for t in e["tools"])]
+    return round(len(hit) / len(acts), 4) if acts else None
+
+
 def _list_len(text):
     try:
         d = json.loads(text)
@@ -185,6 +203,13 @@ def main():
             rows.setdefault(r["instruction"][:60], []).append(r)
         out["live_page_losses"] = {f"grpo-{arm}-s{s}": v for arm in ("shipped", "patched") for s in SEEDS
                                    if (v := live_page_losses(arm, s, plugin, rows))}
+
+    out["exploratory_finishing_without_acting"] = {
+        "note": "not predeclared; found by reading episodes. share of action-task episodes that call "
+                "complete_task, make no call from the guard's own mutation_prefixes, and still score >= 0.9",
+        **{ev: {t: v for t in ["sft-s0"] + [f"grpo-{a}-s{s}" for a in ("shipped", "patched") for s in SEEDS]
+                if (v := finished_without_acting(load(t, ev))) is not None}
+           for ev in ("patched", "shipped")}}
 
     OUT.write_text(json.dumps(out, indent=2) + "\n")
     for k, v in out["levels"].items():
