@@ -9,3 +9,6 @@ __pycache__/
 *.pyc
 .env
 .DS_Store
+
+# raw grpo logs and episodes carry appworld-derived records, only the summary is published
+results/grpo/

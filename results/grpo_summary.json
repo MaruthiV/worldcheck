@@ -1,0 +1,27 @@
+{
+  "decision_rule": "supported if the row-bootstrap 95% interval excludes zero and at least 4 of 5 per-seed differences share its sign",
+  "levels": {},
+  "effects": {},
+  "training_curves": {
+    "grpo-shipped-s0": [
+      0.212,
+      0.272,
+      0.258,
+      0.146,
+      0.179,
+      0.106,
+      0.139,
+      0.225,
+      0.252,
+      0.219
+    ]
+  },
+  "live_page_losses": {
+    "grpo-shipped-s0": {
+      "later_page_requests": 317,
+      "held_records_but_came_back_empty": 102,
+      "correctly_empty": 206,
+      "other": 9
+    }
+  }
+}

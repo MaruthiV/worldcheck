@@ -59,3 +59,28 @@ def test_multi_number_answers_are_flagged():
     assert an.METRICS["multi_number_answer"](episode("q", "24", "0 1 2 24", [], 1.0))
     assert not an.METRICS["multi_number_answer"](episode("q", "24", "24", [], 1.0))
     assert an.METRICS["multi_number_answer"](episode("q", "Azure", "1 2", [], 1.0)) is None
+
+
+def _flip(raw, seeds):
+    for s in seeds:
+        (raw / f"grpo-patched-s{s}-patched.json").write_text(json.dumps(fake_run(0.0, False)))
+        (raw / f"grpo-shipped-s{s}-patched.json").write_text(json.dumps(fake_run(0.9, True)))
+
+
+def test_one_dissenting_seed_of_five_still_supports(raw):
+    _flip(raw, [4])
+    an.main()
+    eff = json.loads((raw / "summary.json").read_text())["effects"]["under the patched plugin"]
+    assert eff["question_accuracy"]["supported"]
+
+
+def test_two_dissenting_seeds_of_five_do_not(raw):
+    # small reversals keep the pooled interval clear of zero, so only the seed rule can reject it
+    for s in (3, 4):
+        (raw / f"grpo-patched-s{s}-patched.json").write_text(json.dumps(fake_run(0.3, True)))
+        (raw / f"grpo-shipped-s{s}-patched.json").write_text(json.dumps(fake_run(0.4, False)))
+    an.main()
+    eff = json.loads((raw / "summary.json").read_text())["effects"]["under the patched plugin"]["question_accuracy"]
+    assert eff["ci95"][0] > 0
+    assert sum(d > 0 for d in eff["per_seed"]) == 3
+    assert not eff["supported"]

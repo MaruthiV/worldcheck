@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 RAW = ROOT / "results" / "grpo"
 OUT = ROOT / "results" / "grpo_summary.json"
-SEEDS = (0, 1, 2)
+SEEDS = (0, 1, 2, 3, 4)
 RESAMPLES = 10000
 LIST_TOOLS = {"spotify__show_song_library", "spotify__show_liked_songs", "spotify__search_songs",
               "spotify__show_album_library", "spotify__show_playlist_library", "spotify__show_recommendations",
@@ -94,9 +94,45 @@ def training_curve(arm, seed, bins=10):
             for i in range(0, size * bins, size) if calls[i:i + size]]
 
 
+def _list_len(text):
+    try:
+        d = json.loads(text)
+    except (TypeError, ValueError):
+        return None
+    return next((len(v) for v in d.values() if isinstance(v, list)), None) if isinstance(d, dict) else None
+
+
+# replay every later-page request from a training log through the guard, which pages correctly
+def live_page_losses(arm, seed, plugin, rows_by_instruction):
+    p = RAW / "train" / f"grpo-{arm}-s{seed}" / "trajectories.jsonl"
+    if not p.exists():
+        return None
+    out = {"later_page_requests": 0, "held_records_but_came_back_empty": 0, "correctly_empty": 0, "other": 0}
+    for line in p.read_text().splitlines():
+        step = json.loads(line)
+        tc = step.get("tool_call") or {}
+        if (_num(tc.get("args", {}).get("page_index", "0")) or 0) < 1:
+            continue
+        out["later_page_requests"] += 1
+        args = {k: (int(v) if str(v).lstrip("-").isdigit() else v) for k, v in tc.get("args", {}).items()
+                if k != "access_token"}
+        should = [_list_len(plugin.expected_appworld_response(r["wm_system_prompt"], tc["name"], args,
+                                                              logged_in_apps={tc["name"].split("__")[0]}))
+                  for r in rows_by_instruction.get(step.get("instruction"), [])]
+        should = max((n for n in should if n is not None), default=None)
+        got = _list_len(step.get("wm_response"))
+        if got == 0 and should:
+            out["held_records_but_came_back_empty"] += 1
+        elif got == 0 and should == 0:
+            out["correctly_empty"] += 1
+        else:
+            out["other"] += 1
+    return out
+
+
 def main():
     rng = random.Random(0)
-    out = {"decision_rule": "supported if the row-bootstrap 95% interval excludes zero and at least 2 of 3 "
+    out = {"decision_rule": "supported if the row-bootstrap 95% interval excludes zero and at least 4 of 5 "
                             "per-seed differences share its sign", "levels": {}, "effects": {}, "training_curves": {}}
     pooled = {}
     for eval_arm in ("patched", "shipped"):
@@ -128,7 +164,7 @@ def main():
                         per_seed.append(round(mean_of(ra) - mean_of(rb), 4))
             agree = sum((d > 0) == (diff > 0) and d != 0 for d in per_seed)
             eff[m] = {"patched_minus_shipped": round(diff, 4), "ci95": ci, "per_seed": per_seed,
-                      "supported": bool(ci and (ci[0] > 0 or ci[1] < 0) and agree >= 2)}
+                      "supported": bool(ci and (ci[0] > 0 or ci[1] < 0) and agree >= max(2, len(per_seed) - 1))}
         out["effects"][f"under the {eval_arm} plugin"] = eff
 
     for arm in ("shipped", "patched"):
@@ -136,6 +172,19 @@ def main():
             c = training_curve(arm, s)
             if c:
                 out["training_curves"][f"grpo-{arm}-s{s}"] = c
+
+    if list((RAW / "train").glob("grpo-*/trajectories.jsonl")):
+        import os
+        import tempfile
+        os.environ.setdefault("TRAJECTORY_LOG", str(Path(tempfile.mkdtemp()) / "traj.jsonl"))
+        from worldcheck.driver import setup
+        patronus, plugin, _ = setup()
+        rows = {}
+        for line in open(patronus / "appworld" / "data" / "appworld_rl_split_clean.jsonl"):
+            r = json.loads(line)
+            rows.setdefault(r["instruction"][:60], []).append(r)
+        out["live_page_losses"] = {f"grpo-{arm}-s{s}": v for arm in ("shipped", "patched") for s in SEEDS
+                                   if (v := live_page_losses(arm, s, plugin, rows))}
 
     OUT.write_text(json.dumps(out, indent=2) + "\n")
     for k, v in out["levels"].items():

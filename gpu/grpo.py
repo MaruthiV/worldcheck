@@ -54,13 +54,13 @@ gpu_fn = dict(gpu=GPU, cpu=CPU, memory=MEM_MB, volumes={"/vol": vol})
 
 
 def spent():
+    vol.reload()
     return sum(json.loads(p.read_text())["usd"] for p in (VOL / "ledger").glob("*.json"))
 
 
 @contextmanager
 def ledger(job):
     (VOL / "ledger").mkdir(parents=True, exist_ok=True)
-    vol.reload()
     if spent() >= CAP_USD:
         raise RuntimeError(f"budget cap ${CAP_USD} reached, refusing to start {job}")
     t0 = time.time()
@@ -309,7 +309,7 @@ def evaluate(model: str, arm: str, tag: str, samples: int = 8, seed: int = 0):
 
 
 @app.function(cpu=1.0, memory=2048, timeout=24 * 3600, volumes={"/vol": vol})
-def orchestrate(stage: str, seeds: tuple = (0, 1, 2)):
+def orchestrate(stage: str, seeds: tuple = (0, 1, 2, 3, 4)):
     vol.reload()
     if stage == "bench":
         s = sft.remote(0)
@@ -324,12 +324,18 @@ def orchestrate(stage: str, seeds: tuple = (0, 1, 2)):
             raise RuntimeError(f"{len(todo)} runs at ${per_run} each would pass the ${CAP_USD} cap")
         outs = list(grpo.starmap([(arm, s, init) for arm, s in todo], return_exceptions=True))
         return {"ran": todo, "results": [str(o) for o in outs], "spent_usd": round(spent(), 2)}
-    if stage == "eval":
+    if stage in ("eval", "eval_sft"):
         jobs = [(str(last_checkpoint(VOL / "runs" / "sft-s0")), arm, "sft-s0") for arm in ("patched", "shipped")]
-        for arm in ("shipped", "patched"):
-            for s in seeds:
-                ck = str(last_checkpoint(VOL / "runs" / f"grpo-{arm}-s{s}"))
-                jobs += [(ck, ev, f"grpo-{arm}-s{s}") for ev in ("patched", "shipped")]
+        if stage == "eval":
+            for arm in ("shipped", "patched"):
+                for s in seeds:
+                    ck = str(last_checkpoint(VOL / "runs" / f"grpo-{arm}-s{s}"))
+                    jobs += [(ck, ev, f"grpo-{arm}-s{s}") for ev in ("patched", "shipped")]
+        jobs = [j for j in jobs if not (VOL / "results" / f"{j[2]}-{j[1]}.json").exists()]
+        # no eval has been measured yet when this first runs, so budget a conservative dollar each
+        per_eval = max([json.loads(p.read_text())["usd"] for p in (VOL / "ledger").glob("eval-*.json")] or [1.0])
+        if spent() + per_eval * len(jobs) > CAP_USD:
+            raise RuntimeError(f"{len(jobs)} evals at ${per_eval} each would pass the ${CAP_USD} cap")
         outs = list(evaluate.starmap(jobs, return_exceptions=True))
         return {"results": [str(o) for o in outs], "spent_usd": round(spent(), 2)}
     raise ValueError(stage)
