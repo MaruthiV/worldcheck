@@ -6,7 +6,7 @@ SCAR_TISSUE = {
     5: "the orders:11 snapshot total was taken before order 1003 was cancelled",
     6: "order 1005 was placed 2026-03-02T04:30 local at UTC+05:30, which is 2026-03-01T23:00 UTC, the previous day",
     7: "charge 9003 is pending, so refunding it must be rejected",
-    8: "note 5001 legitimately contains the literal text {\"error\": \"...\"}",
+    8: "note 5001 legitimately mentions a traceback, which a substring error check misreads as a failure",
 }
 
 SEED_SQL = """
@@ -55,7 +55,7 @@ insert into refunds values
   (7001, 9001, 3000, 'k-7f3a', '2026-02-27T10:00:00');
 
 insert into notes values
-  (5001, 1, 'customer reported the app showed {"error": "card_declined"} at checkout', '2026-02-27T10:05:00'),
+  (5001, 1, 'customer pasted a Traceback from the checkout page, their card was declined', '2026-02-27T10:05:00'),
   (5002, 1, 'partial refund issued for the desk, remainder still owed', '2026-02-27T10:06:00'),
   (5003, 2, 'prefers email contact', '2026-02-23T09:00:00');
 

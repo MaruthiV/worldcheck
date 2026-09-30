@@ -1,0 +1,147 @@
+{
+  "note": "rewards come from the unmodified AppWorldReward at the pinned commit",
+  "mechanism": "appworld_plugin.py:666 gives full credit when the ground truth is a substring of the answer, with no penalty for length or for extra candidates",
+  "question_rows": 11,
+  "number_rows_where_dump_scores_full": 6,
+  "number_rows": 6,
+  "text_rows_where_dump_scores_full": 2,
+  "text_rows": 5,
+  "limits": [
+    "trajectories are hand-built, not sampled from a trained agent",
+    "whether GRPO actually discovers these answers is a separate question"
+  ],
+  "per_row": [
+    {
+      "task_id": "287e338_3",
+      "ground_truth_kind": "text",
+      "exact": 1.0,
+      "dump": {
+        "answer": "every title or name on the first page of each spotify list",
+        "names": 82,
+        "chars": 1825,
+        "contains_ground_truth": true,
+        "reward": 1.0
+      }
+    },
+    {
+      "task_id": "27e1026_2",
+      "ground_truth_kind": "text",
+      "exact": 1.0,
+      "dump": {
+        "answer": "every title or name on the first page of each spotify list",
+        "names": 88,
+        "chars": 1893,
+        "contains_ground_truth": true,
+        "reward": 1.0
+      }
+    },
+    {
+      "task_id": "27e1026_3",
+      "ground_truth_kind": "text",
+      "exact": 1.0,
+      "dump": {
+        "answer": "every title or name on the first page of each spotify list",
+        "names": 76,
+        "chars": 1597,
+        "contains_ground_truth": false,
+        "reward": 0.15
+      }
+    },
+    {
+      "task_id": "e7a10f8_2",
+      "ground_truth_kind": "number",
+      "exact": 1.0,
+      "off_by_one": 0.23958333333333334,
+      "digit_added_in_front": 1.0,
+      "dump": {
+        "answer": "every integer 0 to 100",
+        "chars": 293,
+        "reward": 1.0
+      }
+    },
+    {
+      "task_id": "e85d92a_2",
+      "ground_truth_kind": "text",
+      "exact": 1.0,
+      "dump": {
+        "answer": "every title or name on the first page of each spotify list",
+        "names": 77,
+        "chars": 1707,
+        "contains_ground_truth": false,
+        "reward": 0.15
+      }
+    },
+    {
+      "task_id": "e85d92a_3",
+      "ground_truth_kind": "text",
+      "exact": 1.0,
+      "dump": {
+        "answer": "every title or name on the first page of each spotify list",
+        "names": 87,
+        "chars": 1923,
+        "contains_ground_truth": false,
+        "reward": 0.15
+      }
+    },
+    {
+      "task_id": "fac291d_1",
+      "ground_truth_kind": "number",
+      "exact": 1.0,
+      "off_by_one": 0.24691358024691357,
+      "digit_added_in_front": 1.0,
+      "dump": {
+        "answer": "every integer 0 to 100",
+        "chars": 293,
+        "reward": 1.0
+      }
+    },
+    {
+      "task_id": "4ec8de5_1",
+      "ground_truth_kind": "number",
+      "exact": 1.0,
+      "off_by_one": 0.24358974358974358,
+      "digit_added_in_front": 1.0,
+      "dump": {
+        "answer": "every integer 0 to 100",
+        "chars": 293,
+        "reward": 1.0
+      }
+    },
+    {
+      "task_id": "23cf851_1",
+      "ground_truth_kind": "number",
+      "exact": 1.0,
+      "off_by_one": 0.22727272727272727,
+      "digit_added_in_front": 1.0,
+      "dump": {
+        "answer": "every integer 0 to 100",
+        "chars": 293,
+        "reward": 1.0
+      }
+    },
+    {
+      "task_id": "fac291d_2",
+      "ground_truth_kind": "number",
+      "exact": 1.0,
+      "off_by_one": 0.24731182795698925,
+      "digit_added_in_front": 1.0,
+      "dump": {
+        "answer": "every integer 0 to 100",
+        "chars": 293,
+        "reward": 1.0
+      }
+    },
+    {
+      "task_id": "4ec8de5_3",
+      "ground_truth_kind": "number",
+      "exact": 1.0,
+      "off_by_one": 0.24621212121212122,
+      "digit_added_in_front": 1.0,
+      "dump": {
+        "answer": "every integer 0 to 100",
+        "chars": 293,
+        "reward": 1.0
+      }
+    }
+  ]
+}

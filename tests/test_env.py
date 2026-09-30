@@ -1,5 +1,8 @@
+import json
+
 import pytest
 
+from worldcheck.calibrate import failed
 from worldcheck.env import invariants, seed
 from worldcheck.env.engine import Env
 from worldcheck.env.seed import SCAR_TISSUE
@@ -141,7 +144,8 @@ def test_every_scar_tissue_fixture_is_present():
     assert lo["total"] == 7 and len(lo["orders"]) == 6
     assert env._one("select * from orders where id = 1005")["placed_at"].startswith("2026-03-02T04:30")
     assert env.call("get_charge", charge_id=9003)["status"] == "pending"
-    assert '{"error"' in env._one("select body from notes where id = 5001")["body"]
+    # a legit record their failure-substring rule still counts as a failed response
+    assert failed(json.dumps(env.call("list_notes", customer_id=1)))
 
 
 def test_declared_state_enumerates_records():

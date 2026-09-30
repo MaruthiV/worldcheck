@@ -1,0 +1,1689 @@
+{
+  "meta": {
+    "policies": [
+      "one_page+blind",
+      "one_page+check_first",
+      "one_page+write_then_check",
+      "until_empty+blind",
+      "until_empty+check_first",
+      "until_empty+write_then_check",
+      "by_total+blind",
+      "by_total+check_first",
+      "by_total+write_then_check"
+    ],
+    "tasks": [
+      "E1",
+      "E2",
+      "E3",
+      "E4",
+      "N1",
+      "N2",
+      "N3",
+      "N4",
+      "D1",
+      "D2",
+      "D3",
+      "C1",
+      "C2",
+      "C3",
+      "C4"
+    ],
+    "tie_margin": 0.0333,
+    "proxy_omits": "credential, placeholder and schema-argument multipliers"
+  },
+  "truth": {
+    "one_page+blind": 0.8,
+    "one_page+check_first": 0.8,
+    "one_page+write_then_check": 0.8,
+    "until_empty+blind": 1.0,
+    "until_empty+check_first": 1.0,
+    "until_empty+write_then_check": 1.0,
+    "by_total+blind": 1.0,
+    "by_total+check_first": 1.0,
+    "by_total+write_then_check": 1.0
+  },
+  "reward_only": {
+    "one_page+blind": 0.5655,
+    "one_page+check_first": 0.6388,
+    "one_page+write_then_check": 0.5761,
+    "until_empty+blind": 0.7267,
+    "until_empty+check_first": 0.805,
+    "until_empty+write_then_check": 0.7567,
+    "by_total+blind": 0.7267,
+    "by_total+check_first": 0.8,
+    "by_total+write_then_check": 0.7373
+  },
+  "reward_only_vs_truth": {
+    "counts": {
+      "agree": 26,
+      "collapse": 0,
+      "spurious": 10,
+      "reversal": 0
+    },
+    "pairs": {
+      "collapse": [],
+      "spurious": [
+        [
+          "one_page+blind",
+          "one_page+check_first"
+        ],
+        [
+          "one_page+check_first",
+          "one_page+write_then_check"
+        ],
+        [
+          "until_empty+blind",
+          "until_empty+check_first"
+        ],
+        [
+          "until_empty+blind",
+          "by_total+check_first"
+        ],
+        [
+          "until_empty+check_first",
+          "until_empty+write_then_check"
+        ],
+        [
+          "until_empty+check_first",
+          "by_total+blind"
+        ],
+        [
+          "until_empty+check_first",
+          "by_total+write_then_check"
+        ],
+        [
+          "until_empty+write_then_check",
+          "by_total+check_first"
+        ],
+        [
+          "by_total+blind",
+          "by_total+check_first"
+        ],
+        [
+          "by_total+check_first",
+          "by_total+write_then_check"
+        ]
+      ],
+      "reversal": []
+    },
+    "top_by_view": [
+      "until_empty+check_first",
+      "by_total+check_first"
+    ],
+    "regret": 0.0
+  },
+  "configs": {
+    "ground_truth": {
+      "faults": [],
+      "training_signal": {
+        "one_page+blind": 0.5655,
+        "one_page+check_first": 0.6388,
+        "one_page+write_then_check": 0.5761,
+        "until_empty+blind": 0.7267,
+        "until_empty+check_first": 0.805,
+        "until_empty+write_then_check": 0.7567,
+        "by_total+blind": 0.7267,
+        "by_total+check_first": 0.8,
+        "by_total+write_then_check": 0.7373
+      },
+      "shadow": {
+        "one_page+blind": 0.8,
+        "one_page+check_first": 0.8,
+        "one_page+write_then_check": 0.8,
+        "until_empty+blind": 1.0,
+        "until_empty+check_first": 1.0,
+        "until_empty+write_then_check": 1.0,
+        "by_total+blind": 1.0,
+        "by_total+check_first": 1.0,
+        "by_total+write_then_check": 1.0
+      },
+      "training_signal_vs_truth": {
+        "counts": {
+          "agree": 26,
+          "collapse": 0,
+          "spurious": 10,
+          "reversal": 0
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+check_first"
+            ],
+            [
+              "until_empty+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+blind",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+check_first",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": []
+        },
+        "top_by_view": [
+          "until_empty+check_first",
+          "by_total+check_first"
+        ],
+        "regret": 0.0
+      },
+      "shadow_vs_truth": {
+        "counts": {
+          "agree": 36,
+          "collapse": 0,
+          "spurious": 0,
+          "reversal": 0
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [],
+          "reversal": []
+        },
+        "top_by_view": [
+          "until_empty+blind",
+          "until_empty+check_first",
+          "until_empty+write_then_check",
+          "by_total+blind",
+          "by_total+check_first",
+          "by_total+write_then_check"
+        ],
+        "regret": 0.0
+      },
+      "r_proxy_vs_truth_per_episode": 0.4845,
+      "verifier": {
+        "episodes_flagged": 0,
+        "episodes": 135,
+        "by_check": {}
+      }
+    },
+    "pagination_repeat": {
+      "faults": [
+        "pagination_repeat"
+      ],
+      "training_signal": {
+        "one_page+blind": 0.5655,
+        "one_page+check_first": 0.6388,
+        "one_page+write_then_check": 0.5761,
+        "until_empty+blind": 0.5,
+        "until_empty+check_first": 0.5433,
+        "until_empty+write_then_check": 0.495,
+        "by_total+blind": 0.5,
+        "by_total+check_first": 0.5733,
+        "by_total+write_then_check": 0.5107
+      },
+      "shadow": {
+        "one_page+blind": 0.8,
+        "one_page+check_first": 0.8,
+        "one_page+write_then_check": 0.8,
+        "until_empty+blind": 0.6667,
+        "until_empty+check_first": 0.6667,
+        "until_empty+write_then_check": 0.6667,
+        "by_total+blind": 0.7333,
+        "by_total+check_first": 0.7333,
+        "by_total+write_then_check": 0.7333
+      },
+      "training_signal_vs_truth": {
+        "counts": {
+          "agree": 9,
+          "collapse": 4,
+          "spurious": 9,
+          "reversal": 14
+        },
+        "pairs": {
+          "collapse": [
+            [
+              "one_page+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+blind",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+check_first"
+            ]
+          ],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+check_first"
+            ],
+            [
+              "until_empty+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+blind",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+check_first",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": [
+            [
+              "one_page+blind",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+blind",
+              "by_total+blind"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+blind"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+write_then_check"
+            ]
+          ]
+        },
+        "top_by_view": [
+          "one_page+check_first"
+        ],
+        "regret": 0.2
+      },
+      "shadow_vs_truth": {
+        "counts": {
+          "agree": 9,
+          "collapse": 0,
+          "spurious": 9,
+          "reversal": 18
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [
+            [
+              "until_empty+blind",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+check_first"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+check_first"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": [
+            [
+              "one_page+blind",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+blind",
+              "by_total+blind"
+            ],
+            [
+              "one_page+blind",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+blind"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+write_then_check"
+            ]
+          ]
+        },
+        "top_by_view": [
+          "one_page+blind",
+          "one_page+check_first",
+          "one_page+write_then_check"
+        ],
+        "regret": 0.2
+      },
+      "r_proxy_vs_truth_per_episode": 0.3011,
+      "verifier": {
+        "episodes_flagged": 42,
+        "episodes": 135,
+        "by_check": {
+          "pagination_conformance": 300
+        }
+      }
+    },
+    "pagination_empty": {
+      "faults": [
+        "pagination_empty"
+      ],
+      "training_signal": {
+        "one_page+blind": 0.5655,
+        "one_page+check_first": 0.6388,
+        "one_page+write_then_check": 0.5761,
+        "until_empty+blind": 0.5655,
+        "until_empty+check_first": 0.6438,
+        "until_empty+write_then_check": 0.5955,
+        "by_total+blind": 0.5655,
+        "by_total+check_first": 0.6388,
+        "by_total+write_then_check": 0.5761
+      },
+      "shadow": {
+        "one_page+blind": 0.8,
+        "one_page+check_first": 0.8,
+        "one_page+write_then_check": 0.8,
+        "until_empty+blind": 0.8,
+        "until_empty+check_first": 0.8,
+        "until_empty+write_then_check": 0.8,
+        "by_total+blind": 0.8,
+        "by_total+check_first": 0.8,
+        "by_total+write_then_check": 0.8
+      },
+      "training_signal_vs_truth": {
+        "counts": {
+          "agree": 12,
+          "collapse": 10,
+          "spurious": 10,
+          "reversal": 4
+        },
+        "pairs": {
+          "collapse": [
+            [
+              "one_page+blind",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+blind",
+              "by_total+blind"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+write_then_check"
+            ]
+          ],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+check_first"
+            ],
+            [
+              "until_empty+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+blind",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+check_first",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": [
+            [
+              "one_page+check_first",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+blind"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ]
+          ]
+        },
+        "top_by_view": [
+          "one_page+check_first",
+          "until_empty+check_first",
+          "by_total+check_first"
+        ],
+        "regret": 0.2
+      },
+      "shadow_vs_truth": {
+        "counts": {
+          "agree": 18,
+          "collapse": 18,
+          "spurious": 0,
+          "reversal": 0
+        },
+        "pairs": {
+          "collapse": [
+            [
+              "one_page+blind",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+blind",
+              "by_total+blind"
+            ],
+            [
+              "one_page+blind",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+blind"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+write_then_check"
+            ]
+          ],
+          "spurious": [],
+          "reversal": []
+        },
+        "top_by_view": [
+          "one_page+blind",
+          "one_page+check_first",
+          "one_page+write_then_check",
+          "until_empty+blind",
+          "until_empty+check_first",
+          "until_empty+write_then_check",
+          "by_total+blind",
+          "by_total+check_first",
+          "by_total+write_then_check"
+        ],
+        "regret": 0.2
+      },
+      "r_proxy_vs_truth_per_episode": 0.3572,
+      "verifier": {
+        "episodes_flagged": 24,
+        "episodes": 135,
+        "by_check": {
+          "pagination_conformance": 24
+        }
+      }
+    },
+    "entity_hallucination": {
+      "faults": [
+        "entity_hallucination"
+      ],
+      "training_signal": {
+        "one_page+blind": 0.6182,
+        "one_page+check_first": 0.6916,
+        "one_page+write_then_check": 0.6422,
+        "until_empty+blind": 0.6133,
+        "until_empty+check_first": 0.7017,
+        "until_empty+write_then_check": 0.6912,
+        "by_total+blind": 0.6144,
+        "by_total+check_first": 0.6878,
+        "by_total+write_then_check": 0.6384
+      },
+      "shadow": {
+        "one_page+blind": 0.8667,
+        "one_page+check_first": 0.8667,
+        "one_page+write_then_check": 0.8667,
+        "until_empty+blind": 0.8,
+        "until_empty+check_first": 0.8,
+        "until_empty+write_then_check": 0.8,
+        "by_total+blind": 0.8,
+        "by_total+check_first": 0.8,
+        "by_total+write_then_check": 0.8
+      },
+      "training_signal_vs_truth": {
+        "counts": {
+          "agree": 13,
+          "collapse": 9,
+          "spurious": 11,
+          "reversal": 3
+        },
+        "pairs": {
+          "collapse": [
+            [
+              "one_page+blind",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+blind",
+              "by_total+blind"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+write_then_check"
+            ]
+          ],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+check_first"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+write_then_check"
+            ],
+            [
+              "by_total+blind",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+check_first",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": [
+            [
+              "one_page+check_first",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+blind"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ]
+          ]
+        },
+        "top_by_view": [
+          "one_page+check_first",
+          "until_empty+check_first",
+          "until_empty+write_then_check",
+          "by_total+check_first"
+        ],
+        "regret": 0.2
+      },
+      "shadow_vs_truth": {
+        "counts": {
+          "agree": 18,
+          "collapse": 0,
+          "spurious": 0,
+          "reversal": 18
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [],
+          "reversal": [
+            [
+              "one_page+blind",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+blind",
+              "by_total+blind"
+            ],
+            [
+              "one_page+blind",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+blind"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+write_then_check"
+            ]
+          ]
+        },
+        "top_by_view": [
+          "one_page+blind",
+          "one_page+check_first",
+          "one_page+write_then_check"
+        ],
+        "regret": 0.2
+      },
+      "r_proxy_vs_truth_per_episode": -0.0775,
+      "verifier": {
+        "episodes_flagged": 111,
+        "episodes": 135,
+        "by_check": {
+          "entity_fabrication": 501,
+          "pagination_conformance": 129
+        }
+      }
+    },
+    "json_wrapped": {
+      "faults": [
+        "json_wrapped"
+      ],
+      "training_signal": {
+        "one_page+blind": 0.6588,
+        "one_page+check_first": 0.6388,
+        "one_page+write_then_check": 0.6375,
+        "until_empty+blind": 0.82,
+        "until_empty+check_first": 0.805,
+        "until_empty+write_then_check": 0.8043,
+        "by_total+blind": 0.82,
+        "by_total+check_first": 0.8,
+        "by_total+write_then_check": 0.7987
+      },
+      "shadow": {
+        "one_page+blind": 0.8,
+        "one_page+check_first": 0.8,
+        "one_page+write_then_check": 0.8,
+        "until_empty+blind": 1.0,
+        "until_empty+check_first": 1.0,
+        "until_empty+write_then_check": 1.0,
+        "by_total+blind": 1.0,
+        "by_total+check_first": 1.0,
+        "by_total+write_then_check": 1.0
+      },
+      "training_signal_vs_truth": {
+        "counts": {
+          "agree": 36,
+          "collapse": 0,
+          "spurious": 0,
+          "reversal": 0
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [],
+          "reversal": []
+        },
+        "top_by_view": [
+          "until_empty+blind",
+          "until_empty+check_first",
+          "until_empty+write_then_check",
+          "by_total+blind",
+          "by_total+check_first",
+          "by_total+write_then_check"
+        ],
+        "regret": 0.0
+      },
+      "shadow_vs_truth": {
+        "counts": {
+          "agree": 36,
+          "collapse": 0,
+          "spurious": 0,
+          "reversal": 0
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [],
+          "reversal": []
+        },
+        "top_by_view": [
+          "until_empty+blind",
+          "until_empty+check_first",
+          "until_empty+write_then_check",
+          "by_total+blind",
+          "by_total+check_first",
+          "by_total+write_then_check"
+        ],
+        "regret": 0.0
+      },
+      "r_proxy_vs_truth_per_episode": 0.6957,
+      "verifier": {
+        "episodes_flagged": 135,
+        "episodes": 135,
+        "by_check": {
+          "envelope_contamination": 358
+        }
+      }
+    },
+    "ack_without_persist": {
+      "faults": [
+        "ack_without_persist"
+      ],
+      "training_signal": {
+        "one_page+blind": 0.6588,
+        "one_page+check_first": 0.6388,
+        "one_page+write_then_check": 0.6149,
+        "until_empty+blind": 0.82,
+        "until_empty+check_first": 0.805,
+        "until_empty+write_then_check": 0.7813,
+        "by_total+blind": 0.82,
+        "by_total+check_first": 0.8,
+        "by_total+write_then_check": 0.7761
+      },
+      "shadow": {
+        "one_page+blind": 0.8,
+        "one_page+check_first": 0.8,
+        "one_page+write_then_check": 0.4667,
+        "until_empty+blind": 1.0,
+        "until_empty+check_first": 1.0,
+        "until_empty+write_then_check": 0.6667,
+        "by_total+blind": 1.0,
+        "by_total+check_first": 1.0,
+        "by_total+write_then_check": 0.6667
+      },
+      "training_signal_vs_truth": {
+        "counts": {
+          "agree": 31,
+          "collapse": 0,
+          "spurious": 5,
+          "reversal": 0
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "by_total+blind",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": []
+        },
+        "top_by_view": [
+          "until_empty+blind",
+          "until_empty+check_first",
+          "by_total+blind",
+          "by_total+check_first"
+        ],
+        "regret": 0.0
+      },
+      "shadow_vs_truth": {
+        "counts": {
+          "agree": 22,
+          "collapse": 0,
+          "spurious": 10,
+          "reversal": 4
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "by_total+check_first",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": [
+            [
+              "one_page+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ]
+          ]
+        },
+        "top_by_view": [
+          "until_empty+blind",
+          "until_empty+check_first",
+          "by_total+blind",
+          "by_total+check_first"
+        ],
+        "regret": 0.0
+      },
+      "r_proxy_vs_truth_per_episode": 0.6621,
+      "verifier": {
+        "episodes_flagged": 27,
+        "episodes": 135,
+        "by_check": {
+          "phantom_mutation": 33,
+          "read_after_write": 48
+        }
+      }
+    },
+    "stale_read": {
+      "faults": [
+        "stale_read"
+      ],
+      "training_signal": {
+        "one_page+blind": 0.5655,
+        "one_page+check_first": 0.6388,
+        "one_page+write_then_check": 0.5383,
+        "until_empty+blind": 0.7267,
+        "until_empty+check_first": 0.805,
+        "until_empty+write_then_check": 0.7227,
+        "by_total+blind": 0.7267,
+        "by_total+check_first": 0.8,
+        "by_total+write_then_check": 0.6995
+      },
+      "shadow": {
+        "one_page+blind": 0.8,
+        "one_page+check_first": 0.8,
+        "one_page+write_then_check": 0.4667,
+        "until_empty+blind": 1.0,
+        "until_empty+check_first": 1.0,
+        "until_empty+write_then_check": 0.6667,
+        "by_total+blind": 1.0,
+        "by_total+check_first": 1.0,
+        "by_total+write_then_check": 0.6667
+      },
+      "training_signal_vs_truth": {
+        "counts": {
+          "agree": 26,
+          "collapse": 0,
+          "spurious": 10,
+          "reversal": 0
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+check_first"
+            ],
+            [
+              "until_empty+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+blind",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+check_first",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": []
+        },
+        "top_by_view": [
+          "until_empty+check_first",
+          "by_total+check_first"
+        ],
+        "regret": 0.0
+      },
+      "shadow_vs_truth": {
+        "counts": {
+          "agree": 22,
+          "collapse": 0,
+          "spurious": 10,
+          "reversal": 4
+        },
+        "pairs": {
+          "collapse": [],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "by_total+check_first",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": [
+            [
+              "one_page+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ]
+          ]
+        },
+        "top_by_view": [
+          "until_empty+blind",
+          "until_empty+check_first",
+          "by_total+blind",
+          "by_total+check_first"
+        ],
+        "regret": 0.0
+      },
+      "r_proxy_vs_truth_per_episode": 0.4626,
+      "verifier": {
+        "episodes_flagged": 15,
+        "episodes": 135,
+        "by_check": {
+          "read_after_write": 36
+        }
+      }
+    },
+    "appworld_like": {
+      "faults": [
+        "pagination_empty",
+        "ack_without_persist"
+      ],
+      "training_signal": {
+        "one_page+blind": 0.6588,
+        "one_page+check_first": 0.6388,
+        "one_page+write_then_check": 0.6149,
+        "until_empty+blind": 0.6588,
+        "until_empty+check_first": 0.6438,
+        "until_empty+write_then_check": 0.6201,
+        "by_total+blind": 0.6588,
+        "by_total+check_first": 0.6388,
+        "by_total+write_then_check": 0.6149
+      },
+      "shadow": {
+        "one_page+blind": 0.8,
+        "one_page+check_first": 0.8,
+        "one_page+write_then_check": 0.4667,
+        "until_empty+blind": 0.8,
+        "until_empty+check_first": 0.8,
+        "until_empty+write_then_check": 0.4667,
+        "by_total+blind": 0.8,
+        "by_total+check_first": 0.8,
+        "by_total+write_then_check": 0.4667
+      },
+      "training_signal_vs_truth": {
+        "counts": {
+          "agree": 15,
+          "collapse": 14,
+          "spurious": 5,
+          "reversal": 2
+        },
+        "pairs": {
+          "collapse": [
+            [
+              "one_page+blind",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+blind",
+              "by_total+blind"
+            ],
+            [
+              "one_page+blind",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+blind"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+write_then_check"
+            ]
+          ],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "by_total+blind",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": [
+            [
+              "one_page+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ]
+          ]
+        },
+        "top_by_view": [
+          "one_page+blind",
+          "one_page+check_first",
+          "until_empty+blind",
+          "until_empty+check_first",
+          "by_total+blind",
+          "by_total+check_first"
+        ],
+        "regret": 0.2
+      },
+      "shadow_vs_truth": {
+        "counts": {
+          "agree": 12,
+          "collapse": 10,
+          "spurious": 10,
+          "reversal": 4
+        },
+        "pairs": {
+          "collapse": [
+            [
+              "one_page+blind",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+blind",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+blind",
+              "by_total+blind"
+            ],
+            [
+              "one_page+blind",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+blind"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+check_first"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+blind"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+check_first"
+            ],
+            [
+              "one_page+write_then_check",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+write_then_check",
+              "by_total+write_then_check"
+            ]
+          ],
+          "spurious": [
+            [
+              "one_page+blind",
+              "one_page+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "one_page+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "until_empty+check_first",
+              "by_total+write_then_check"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+blind"
+            ],
+            [
+              "until_empty+write_then_check",
+              "by_total+check_first"
+            ],
+            [
+              "by_total+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "by_total+check_first",
+              "by_total+write_then_check"
+            ]
+          ],
+          "reversal": [
+            [
+              "one_page+blind",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+blind",
+              "by_total+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "until_empty+write_then_check"
+            ],
+            [
+              "one_page+check_first",
+              "by_total+write_then_check"
+            ]
+          ]
+        },
+        "top_by_view": [
+          "one_page+blind",
+          "one_page+check_first",
+          "until_empty+blind",
+          "until_empty+check_first",
+          "by_total+blind",
+          "by_total+check_first"
+        ],
+        "regret": 0.2
+      },
+      "r_proxy_vs_truth_per_episode": 0.4482,
+      "verifier": {
+        "episodes_flagged": 51,
+        "episodes": 135,
+        "by_check": {
+          "phantom_mutation": 33,
+          "read_after_write": 48,
+          "pagination_conformance": 24
+        }
+      }
+    }
+  }
+}
