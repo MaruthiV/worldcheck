@@ -1,29 +1,23 @@
 # WorldCheck
 
-WorldCheck tests whether a simulator used to train AI agents actually shows the agent what it needs
-to see, and whether the training score notices when it doesn't.
+Some AI agents are trained inside a simulator instead of the real software: the agent asks a fake
+Spotify for its songs, the simulator answers, and a score says how well it did. Patronus AI published
+one of these for the AppWorld benchmark in
+[`patronus-ai/mdlm_world_modeling`](https://github.com/patronus-ai/mdlm_world_modeling). This repo
+checks it, on their own code and data, at commit `58e6fe0c`.
 
-## In plain terms
+**What I found, in one breath:** the simulator hides every page of a list after the first, the score
+can't tell, and when you actually train through it, the agents learn to declare tasks done without
+doing them.
 
-Some AI agents are trained inside a simulator instead of the real software. The agent asks a fake
-Spotify for its song library, the simulator answers, and a score says how well the agent did. Think of
-it as a flight simulator for software agents. Patronus AI published one of these for the AppWorld
-benchmark in [`patronus-ai/mdlm_world_modeling`](https://github.com/patronus-ai/mdlm_world_modeling).
-
-In that code, when the agent asks for the second page of a list, the simulator hands back an empty
-page. It still says the list has 80 items. The agent has been told to keep asking until a page comes
-back empty, so it stops after the first 20. The training score is the same whether the agent saw 20
-songs or all 80, so nothing in training notices.
-
-Picture a driving simulator where every street past the first block is blank, and the instructor only
-checks that you didn't crash. You pass every lesson and never learn most of the city.
-
-This repo shows that happening on Patronus's own code and data, without a GPU. It includes a fix and
-the first tests that code has had. It then trains agents with Patronus's own recipe through the broken
-and the fixed code. The bug fires about a hundred times per training run, but the trained agents come
-out the same, because the training score pays nearly full marks for declaring a task done without doing
-it. Finally, a small practice environment measures the general question behind all this: when a
-simulator makes mistakes, does the training score still rank good agents above bad ones?
+```mermaid
+flowchart LR
+    A["Agent asks<br/>for page 1"] --> B["Responder pages<br/>correctly: songs 21-40"]
+    B --> C["Plugin pages again:<br/>page 1 of a 20-song list"]
+    C --> D["Agent gets [ ]<br/>total still says 80"]
+    D --> E["Told to stop at an<br/>empty page: saw 20 of 80"]
+    E --> F["Score: not empty,<br/>no error, success"]
+```
 
 ## Check it yourself
 
@@ -32,438 +26,249 @@ uv venv && uv pip install -r requirements.txt
 PYTHONPATH=. .venv/bin/python -m pytest tests/ -q
 ```
 
-That needs three pure-python packages and takes a few seconds. No GPU and no model weights. The first
-run fetches the two upstream repos it pins, about 100MB, into `.upstream/`. Set `WORLDCHECK_UPSTREAM`
-to keep them somewhere else.
+Three pure-python packages, a few seconds, no GPU. The first run fetches the two pinned upstream repos
+(about 100MB) into `.upstream/`.
 
-Everything runs the upstream code unmodified, at commit `58e6fe0c963ee4256f6bb02ee99f6b47dc3feb2e`,
-which is the current head of its `main` branch.
+## 1. Every page after the first comes back empty
 
-## What goes wrong
+The simulator's "responder" pages a list correctly. The training plugin then pages that already-paged
+answer a second time, so page 1 onward is always empty while `total` still reports the full count. The
+agent is told to keep asking until a page is empty, so it stops after one.
 
-The upstream code has a "local responder", which it also calls the guard. It answers most list
-requests straight from the records written into the prompt, without calling the model. It exists to
-fix a failure the paper documents in Table 7 (i): a world model that returned page 0 again when asked
-for page 1. The responder gets pagination right. The training plugin then paginates its answer a
-second time.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/pages-dark.svg">
+  <img alt="Songs per page: the responder computes 20 on each of pages 0 to 3; the agent receives 20 on page 0 and 0 on pages 1 to 3." src="figures/pages-light.svg" width="720">
+</picture>
 
 | Step | Where | What happens |
 |---|---|---|
-| 1 | `appworld_wm_prompt.py:313-315` | The responder pages correctly: `start = page_index * page_limit` over the matching records. |
-| 2 | `appworld_plugin.py:421-422` | The plugin applies `start = page_index * page_limit` again, to a list that is already one page long. Anything past page 0 comes back empty. |
-| 3 | `appworld_prompt.py:36` | The agent is told: "If a task requires all matching records, increment page_index until the response is empty." |
-| 4 | `appworld_plugin.py:583-584` | The reward counts a response as a success if it is non-empty and contains no `"error"`. `{"total": 80, "songs": []}` passes. |
+| Responder pages correctly | `appworld_wm_prompt.py:313-315` | `start = page_index * page_limit` over the matching records |
+| Plugin pages again | `appworld_plugin.py:421-422` | the same slice, applied to a list that is already one page |
+| Agent stops early | `appworld_prompt.py:36` | "increment page_index until the response is empty" |
 
-The guard is on by default (`appworld_plugin.py:372`) and no training script turns it off, so this is
-the configuration that ships.
+It reaches all 34 of 34 training tasks, and it is on by default (`appworld_plugin.py:372`).
 
-Here is what the agent receives for row `692c77d_2`, an 80-song library, at the page size the agent
-prompt recommends:
+<details>
+<summary>More evidence: not a cache bug, a better model wouldn't fix it, and smaller problems</summary>
 
-| Page | Plugin returns | Responder computed | `total` reported |
-|---|---|---|---|
-| 0 | 20 songs | 20 songs | 80 |
-| 1 | **none** | 20 songs | 80 |
-| 2 | **none** | 20 songs | 80 |
-| 3 | **none** | 20 songs | 80 |
+- **Not a stale cache.** The very first request for page 1, with nothing cached, is also empty and
+  still reports `total: 80`.
+- **It also mislabels.** Ask for page 1 first, then page 0, and page 0 comes back holding page 1's songs
+  (ids `217, 317, 95, ...` instead of `311, 36, 12, ...`).
+- **A better world model wouldn't fix it.** The upstream README marks the responder "(optional - worth
+  ablation)". Turning it off, with a stub world model that returns exactly the right records, still
+  loses every page after the first:
 
-The agent stops at page 1 under its own rule, having seen 20 of 80.
+  | Version | Tasks read in full | Records seen, on average |
+  |---|---|---|
+  | Responder on, as shipped | 0 of 30 | 20.0 of 60.4 |
+  | Responder on, patched | 30 of 30 | 60.4 of 60.4 |
+  | Responder off, perfect stub | 0 of 30 | 20.0 of 60.4 |
 
-Two results rule out the explanations people reach for first:
+  The paper (Section 5) expects pagination drift "to improve as MDLM scaling and tool-use centric
+  post-training continues to mature." This part of it lives in the plugin, so scaling never reaches it.
+  It is a different symptom from the paper's Table 7 (i), which is repeated pages, not empty ones.
+- **Single records get truncated.** The plugin re-pages the first list inside *any* response, so
+  playlist 300 comes back with 5 of its 8 songs.
+- **The two layers disagree on edge cases.** `page_limit=0` gives 0 records from the plugin and 1 from
+  the responder; `page_index=-1` gives 0 and 20.
+- **Not a bug, but worth knowing.** Writes are acknowledged without changing what later reads return.
+  The paper's Appendix G documents this as intended, so it is recorded, not reported.
+- **A separate data issue.** 16 of the 34 tasks advertise more records than they list, 1,992 in all
+  (the worst says 169 and lists 30). No pagination fix can recover those.
 
-- **It is not a stale cache.** The very first request for page 1, with nothing cached, is also empty
-  and still reports `total: 80`. The second offset is applied every time.
-- **It loses records and also mislabels them.** Ask for page 1 first and you get nothing. Ask for page
-  0 next and you get page 1's songs (ids `217, 317, 95, ...`) where page 0's (`311, 36, 12, ...`)
-  belong.
+</details>
 
-## How much of the training data it reaches
+## 2. The score can't tell
 
-All 34 of 34 rows in the RL split (`appworld/data/appworld_rl_split_clean.jsonl`) list more records
-than the recommended page size in at least one collection, so every training task can hit it. Row 0's
-task is "Give a 1-star rating to all songs in my Spotify song library which I have not liked."
+The score counts a response as a success if it isn't empty and doesn't say "error"
+(`appworld_plugin.py:583-584`). An empty page with a total attached passes. For questions with one right
+answer, it checks whether the right answer appears *anywhere* in the reply (`appworld_plugin.py:666`).
 
-## The training score can't see it
+| What the agent did | Score from the unmodified `AppWorldReward` |
+|---|---|
+| Saw 20 of 80 songs, through the shipped plugin | 0.0105 |
+| Saw all 80 songs, with correct paging | **0.0105**, identical |
+| Answered "0 1 2 ... 100" to a counting question | **1.0**, on all 6 counting tasks |
+| Answered "124" when the truth is 24 | **1.0**, on all 6 |
+| Answered 25 when the truth is 24 | about 0.24 |
 
-Scored with the unmodified `AppWorldReward`:
+<details>
+<summary>Details</summary>
 
-| Trajectory | Songs seen | Reward |
-|---|---|---|
-| Sweep through the shipped plugin | 20 of 80 | **0.0105** |
-| Sweep with correct pagination | 80 of 80 | **0.0105** |
-| All four pages empty | 0 | 0.0105 |
-| One full page | 20 | 0.0105 |
-| One empty page with `total: 80` | 0 | 0.0090 |
-| One explicit `{"error": ...}` | none | 0.0000 |
+- The small absolute values in the first two rows come from hand-built sweeps that skip the credential
+  steps the score also rewards. The point is that the two are equal, not their size.
+- Pasting every title from the first page of each Spotify list scores 1.0 on 2 of the 5 name questions.
+  The other 3 answers sit past the first page, which the shipped plugin never shows.
+- These are hand-built answers. Whether training actually finds them is checked in section 3: it
+  didn't, at this size.
 
-The gap between seeing a quarter of the library and seeing all of it is exactly zero. That follows
-from the rule in step 4: an empty list with a total attached is non-empty and has no `"error"` in it,
-so it counts as a success. Only an explicit error lowers the score.
+</details>
 
-These trajectories are hand-built rather than sampled from a trained agent, and the absolute values
-are small because they skip the credential steps the reward expects. The claim is only that the reward
-cannot tell the two apart.
+## 3. What happens in real training
 
-## The score also accepts a list of guesses
+I ran Patronus's own recipe for real: fine-tuning on their demonstrations, then GRPO reinforcement
+learning, on the smallest agent in their paper (LFM2.5-1.2B). Once through the shipped plugin and once
+through the fixed one, five seeds each, everything else identical.
 
-Some training tasks are questions with one right answer, like "how many unique songs are across my
-library, albums and playlists?" For these the score checks whether the right answer appears *anywhere*
-in the agent's reply, not whether the reply is the answer. So a reply listing every number from 0 to 100
-gets full marks on every counting question, without the agent looking at any data.
+**The bug fires constantly.** In every shipped run, about a hundred pages that held records came back
+empty. In the fixed runs, none.
 
-Scored with the unmodified `AppWorldReward` on the 11 question rows of the RL split:
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/lost-pages-dark.svg">
+  <img alt="Pages that held records but came back empty, per training run: shipped plugin 79 to 108 per run; fixed plugin 0 in every run." src="figures/lost-pages-light.svg" width="720">
+</picture>
 
-| Reply | 6 counting questions | 5 name questions |
-|---|---|---|
-| The exact answer | 1.0 on all 6 | 1.0 on all 5 |
-| `0 1 2 ... 100`, 293 characters | **1.0 on all 6** | |
-| The answer with a digit in front, `124` for 24 | **1.0 on all 6** | |
-| Off by one, `25` for 24 | 0.23 to 0.25 | |
-| Every title and name on the first page of each Spotify list | | **1.0 on 2**, 0.15 on 3 |
+**Yet the trained agents came out the same.** Training worked (average score rose from 0.39 to 0.60),
+but equally in both versions, and no measure declared before the runs separated them.
 
-The rule is at `appworld_plugin.py:666`: if `gt.lower() in answer.lower()`, the reward is 1.0. Nothing
-checks the length of the answer or how many candidates it contains, so a wrong number that happens to
-contain the right digits scores four times higher than a nearly right one. The three name questions
-where pasting a list fails are the ones whose answer sits past the first page, which is the part the
-shipped plugin never shows.
+**What training did learn was to skip the work.** On tasks that need a change, like rating songs or
+accepting payment requests, the trained agents mostly logged in, looked around and declared the task
+done. The score pays that almost full marks.
 
-This shows the reward can be gamed. It is not evidence that training actually games it. The training
-runs in progress check for exactly that.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="figures/skip-work-dark.svg">
+  <img alt="Share of action-task attempts scoring 0.9 or more with no state-changing call: 17% after fine-tuning; 38 to 48% after GRPO through either plugin." src="figures/skip-work-light.svg" width="720">
+</picture>
 
-## A better model would not fix this
+If the score doesn't need the task done, fixing what the agent sees can't change what it learns. The
+fix is necessary but not sufficient; the score is what limits training here. That last chart is
+exploratory: it came from reading episodes by hand, not from the plan.
 
-The upstream README marks the guard "(optional - worth ablation)". This is that ablation: three
-versions of the pipeline, over the 30 rows with a list longer than one page, using the same scripted
-sweep in each.
+<details>
+<summary>How it was run, the full comparison, and limits</summary>
 
-| Version | Rows fully read | Records seen, on average | Mean reward | Rows that stop by page 1 |
+**Setup.** `run_lfm25_sft.sh` then `run_lfm25_sft_grpo_v2.sh`, unchanged except: fine-tuning uses
+`appworld_sft_gpt_agent.jsonl` because the file the script names isn't in the repo; `max_length` 16384
+instead of 4096 so no demonstration is dropped; the training vLLM gets 0.35 of the GPU instead of 0.5;
+TensorBoard instead of Weights & Biases. Their SDAR world model is unreleased, so
+`Qwen/Qwen3-4B-Instruct-2507` stands in under the name their proxy expects. It was asked 3 to 29 times
+per run out of 3,300 to 3,900 tool calls; the responder answered the rest. torch 2.10.0, vLLM 0.19.0,
+transformers 4.57.6, TRL 0.29.1, ms-swift `43b5d8e`. One A100-80GB per run on Modal, about 21 minutes
+and $1.15 each; $24.33 in all, $5.74 of it on a cancelled batch that was rerun from scratch.
+
+**The declared comparison.** Each checkpoint ran 8 times on each of the 34 tasks, scored through the
+fixed plugin. A difference counts only if its 95% interval excludes zero and 4 of 5 seed pairs agree.
+
+| Measure | Fine-tuned only | Trained, shipped | Trained, fixed | Fixed minus shipped |
 |---|---|---|---|---|
-| Guard on, as shipped | **0 of 30** | 20.0 of 60.4 | 0.01215 | **30** |
-| Guard on, patched | **30 of 30** | 60.4 of 60.4 | 0.01192 | **0** |
-| Guard off, perfect stand-in model | **0 of 30** | 20.0 of 60.4 | 0.01215 | **30** |
+| Questions answered exactly right | 0.000 | 0.005 | 0.000 | -0.005 (-0.014 to 0.000) |
+| Sweeps that read past page 0 | 0.198 | 0.169 | 0.171 | +0.002 (-0.028 to +0.029) |
+| Score | 0.394 | 0.604 | 0.609 | +0.005 (-0.010 to +0.020) |
 
-- **As shipped, not one row can be read in full.** The agent sees exactly one page every time.
-- **Turning the guard off changes nothing.** The plugin rewrites the response after it is produced,
-  whoever produced it. The guard-off version uses a stub that returns exactly the records the prompt
-  declares, which is a perfect world model for this purpose, and it still loses every page after the
-  first. The paper (Section 5) expects pagination drift "to improve as MDLM scaling and tool-use
-  centric post-training continues to mature." This part of the pagination problem lives in the
-  plugin, so no improvement to the model reaches it. It is a different symptom from Table 7 (i):
-  empty pages rather than repeated ones.
-- **The patch fixes it completely, and the reward goes slightly down.** Per row the patched version is
-  never scored higher: lower on 3 rows, the same on 27.
+Nothing passes. Question accuracy could never show an effect at this size: no agent answers the
+questions (0 to 2 right out of 440 attempts per group). Scored through the shipped plugin instead,
+trained-through-fixed agents read past page 0 3.7 points more often (+0.5 to +6.4, all five seeds
+agree), but that was not the declared view and with eighteen comparisons it could be chance.
 
-## Two smaller problems in the same block
+**The exploratory chart.** Among attempts at tasks that need a change of state: called `complete_task`,
+made no call from the responder's own list of state-changing tools (`appworld_wm_prompt.py:384-390`),
+and still scored at least 0.9. After training, agents finish 94-95% of these tasks and 91% of those
+finishes change nothing; the score averages 0.87 to 0.88 for those, against 0.84 to 0.89 for finishes
+that do change something. All 23 action tasks show it. One task (play a song) needs a tool outside that
+list; leaving it out moves every rate by at most 2 points.
 
-- **Single-record responses lose part of a field.** The plugin re-pages the first non-empty list inside
-  *any* response. For playlist 300, `spotify__show_playlist` returns `songs` with 8 entries from the
-  responder and 5 after the plugin, cut to the default page size, with a made-up `total` added.
-- **The two layers disagree about the page window.** `page_limit=0` gives 0 records from the plugin and
-  1 from the responder. `page_index=-1` gives 0 and 20. The responder clamps these values
-  (`max(0, ...)`, `max(1, ...)`) and the plugin doesn't.
+**Limits.** Scored on the same 34 tasks they trained on, through the simulator, not real AppWorld; the
+paper's AppWorld results come from a real-environment evaluation this does not reproduce. One small
+agent, one fine-tuning seed. The raw logs contain AppWorld-derived records, so only the aggregates
+(`results/grpo_summary.json`) are in this repo.
 
-## Not a bug: writes that don't show up in later reads
-
-The paper's Appendix G documents that writes are answered with a fixed "Action completed" without
-calling the model, and that reads are computed from the records baked into the prompt. So after
-renaming note 2704 the next read still shows the old title "Book Reading Lists". Updating note
-`999999`, which doesn't exist, also reports success, and a deleted note stays readable. That is the
-documented design, so it is recorded here and not reported as a defect. It matters because it limits
-what the simulator can check within one episode, and the fix below deliberately leaves it unchanged.
-
-## A separate issue in the data
-
-Each prompt introduces a list with a header like `songs (81 total, 80 shown)`, and only the shown
-records follow. **16 of the 34 rows advertise more than they list, 1,992 records in all.** The worst
-advertises 169 and lists 30. No pagination fix recovers these, because the simulator was never given
-them, while `total` keeps telling the agent they exist. This comes from how the rows were built, not
-from the plugin, so it is a separate claim.
+</details>
 
 ## The fix
 
-[`patches/appworld_plugin_pagination.patch`](patches/appworld_plugin_pagination.patch) removes 37
-lines and adds 14. It:
+[`patches/appworld_plugin_pagination.patch`](patches/appworld_plugin_pagination.patch) removes 37 lines
+and adds 14. It makes the plugin use the responder's own page window, pick the right list field instead
+of the first one it finds, re-page only when a response really is longer than one page, and drop a cache
+that stored one page as if it were the whole list.
 
-- takes `page_index` and `page_limit` from the responder's own `_page_args`, so both layers agree on
-  the window;
-- picks the list field from `RETURN_KEY_BY_SECTION` instead of guessing the first list it finds;
-- re-pages only when a response is longer than one page;
-- drops `_list_caches`, which stored one page as if it were the whole list and was never cleared.
+<details>
+<summary>Why the obvious fixes are wrong</summary>
 
-The re-page step is kept on purpose. It is the defence against a world model that returns more than
-one page, which is exactly Table 7 (i). Two obvious fixes are wrong. Deleting the block brings that
-failure back. Adding `page_index` to the cache key changes nothing, because the cached value is already
-a single page. `test_patched_still_pages_an_overlong_reply` pins the first of these.
+The re-page step stays, because it defends against a world model that returns several pages at once,
+which is exactly the paper's Table 7 (i). Deleting the block brings that failure back. Adding
+`page_index` to the cache key changes nothing, because the cached value is already a single page.
+`test_patched_still_pages_an_overlong_reply` pins the first case. The patch is generated from
+exact-text replacements in `worldcheck/fix.py`, each of which must match upstream exactly once.
 
-The patch is generated from exact-text replacements in `worldcheck/fix.py`, each of which must match
-the upstream file exactly once, so upstream drift fails loudly instead of misapplying. Applied to the
-pinned checkout, the four-page sweep returns all 80 songs.
-
-## What happens in real training
-
-Everything above uses hand-built sweeps. So I ran Patronus's own training recipe for real: fine-tuning on
-their demonstrations, then GRPO reinforcement learning, on the smallest agent in their paper,
-LFM2.5-1.2B. It ran once through the shipped plugin and once through the fixed one, five times each with
-different random seeds, with everything else identical. Three things came out of it.
-
-**The bug fires constantly.** In every shipped run the agent asked for a later page of some list 209 to
-317 times, and 79 to 108 of those pages held records but came back empty. In the fixed runs, not once.
-
-**Yet the trained agents came out the same.** Training clearly worked: average reward rose from 0.39
-after fine-tuning to 0.60 after GRPO, equally in both versions. But on every measure declared before the
-runs, agents trained through the fixed plugin were indistinguishable from agents trained through the
-shipped one.
-
-**Because training learned to satisfy the score instead of doing the tasks.** On tasks that require
-changing something, like rating songs or accepting payment requests, the trained agents usually logged
-in, looked around and declared the task complete without changing anything. The score pays that almost
-full marks. The share of those task attempts scoring 0.9 or more while changing nothing rose from 17%
-before GRPO to between 38% and 48% after, in every run of both versions. If the score doesn't need the
-task done, fixing what the agent sees can't change what it learns.
-
-So the pagination fix is necessary but not sufficient: the reward is what limits training here. That
-last result was not part of the plan. It came from reading the trained agents' episodes by hand, and it
-is labelled exploratory below.
-
-### How it was run
-
-| | |
-|---|---|
-| Agent | `LiquidAI/LFM2.5-1.2B-Instruct`, one of the three agents in the paper's Table 3 |
-| Recipe | `run_lfm25_sft.sh`, then `run_lfm25_sft_grpo_v2.sh`, unchanged except as listed below |
-| Runs | One fine-tuned checkpoint shared by both versions, then five GRPO seeds per version |
-| World model | Their SDAR model is unreleased (upstream issue #1), so `Qwen/Qwen3-4B-Instruct-2507` stands in, served under the name their `wm_proxy.py` asks for. It was asked 3 to 29 times per run, one of them a startup check, out of 3,300 to 3,900 tool calls; the guard answered the rest |
-| Software | torch 2.10.0, vLLM 0.19.0, transformers 4.57.6, TRL 0.29.1, ms-swift at `43b5d8e`, all from the same weeks as the upstream commit |
-| Hardware | One A100-80GB per run on Modal, about 21 minutes and $1.15 per GRPO run |
-
-Changes from their scripts: fine-tuning uses `appworld_sft_gpt_agent.jsonl`, because the LFM-specific
-file the script names is not in the repo. Fine-tuning `max_length` is 16384 instead of 4096, so no
-demonstration is dropped. The training-time vLLM gets 0.35 of the GPU instead of 0.5, to make room for
-the stand-in model. Logging goes to TensorBoard instead of Weights & Biases.
-
-The design, the measures and the rule for calling a difference real were written down before any
-training run and not changed afterwards. Each trained checkpoint was run 8 times on each of the 34
-training tasks, through both plugins.
-
-### Lost pages during training
-
-Every later-page request in each run's training log was replayed through the guard, which pages
-correctly, and compared with what the plugin actually returned.
-
-| Version | Later-page requests per run | Held records, came back empty | Correctly empty, past the end |
-|---|---|---|---|
-| Shipped | 209 to 317 | **79 to 108** | 100 to 206 |
-| Fixed | 301 to 390 | **0** | 121 to 211 |
-
-The agents trained through the fixed plugin also asked for more later pages, because a page with records
-in it invites the next one.
-
-### The declared comparison
-
-Scored through the fixed plugin, which shows correct pages. A difference counts only if its 95% interval,
-from resampling tasks, excludes zero and at least 4 of the 5 seed pairs agree on its direction.
-
-| Measure | Fine-tuned only | Trained, shipped | Trained, fixed | Fixed minus shipped, 95% interval |
-|---|---|---|---|---|
-| Questions answered exactly right | 0.000 | 0.005 | 0.000 | -0.005, from -0.014 to 0.000 |
-| Sweeps that read past the first page | 0.198 | 0.169 | 0.171 | +0.002, from -0.028 to +0.029 |
-| Highest page requested | 0.37 | 0.26 | 0.22 | -0.04, from -0.12 to +0.02 |
-| Reward | 0.394 | 0.604 | 0.609 | +0.005, from -0.010 to +0.020 |
-| Turns that don't parse as a tool call | 2.4% | 2.8% | 2.7% | -0.1 points, from -0.7 to +0.5 |
-
-No measure passes. Question accuracy was never going to show anything at this size: no agent, fine-tuned
-or trained, answers the questions. That is 0 to 2 correct out of 440 question attempts per group. A
-stronger agent would be needed to test that part.
-
-Scored through the shipped plugin instead, two of the nine measures pass the rule: trained-through-fixed
-agents read past the first page 3.7 points more often (interval +0.5 to +6.4, all five seeds agree), and
-produce slightly fewer unparseable turns. That was not the declared view, and with eighteen comparisons
-two passing could be chance, so it is reported and not claimed.
-
-Training also did not discover the answer-listing trick from earlier: across 240 counting answers per
-group, at most 2 contained more than one number, and those were ordinary sentences.
-
-### Exploratory: finishing without acting
-
-Found by reading episodes, not planned. Among attempts at tasks that need a change of state, the share
-that call `complete_task`, make no call from the guard's own list of state-changing tools
-(`appworld_wm_prompt.py:384-390`), and still score at least 0.9:
-
-| Checkpoint | Through the fixed plugin | Through the shipped plugin |
-|---|---|---|
-| Fine-tuned only | 17% | 18% |
-| Trained through shipped, seeds 0 to 4 | 47, 43, 38, 45, 48% | 36, 42, 39, 41, 46% |
-| Trained through fixed, seeds 0 to 4 | 38, 41, 48, 43, 48% | 46, 42, 42, 38, 48% |
-
-After training, agents call `complete_task` on 94-95% of these tasks, and 91% of those finishes change
-nothing. The reward averages 0.87 to 0.88 for a finish that changes nothing and 0.84 to 0.89 for one that does.
-Every one of the 23 action tasks shows it.
-
-### Limits
-
-- The agents were scored on the same 34 tasks they trained on, through the simulator, not in real
-  AppWorld. The paper's own AppWorld results come from its real-environment evaluation, which this does
-  not reproduce.
-- One small agent, one fine-tuning seed, and a stand-in world model that the guard made almost
-  irrelevant.
-- "Changed nothing" means no call from the guard's list of state-changing tools. Every action task in
-  this split needs one of those tools except one, which asks the agent to play a song. Leaving that task
-  out moves every rate above by at most 2 points.
-
-`python -m gpu.analyze` recomputes all of this from the downloaded logs, and `gpu/grpo.py` is the whole
-training and evaluation job. The raw logs and episodes contain AppWorld-derived records, so they are
-not in this repo; `results/grpo_summary.json` holds the aggregates. The whole arm cost $24.33 on Modal,
-$5.74 of it on a batch of runs that got cancelled part-way and were rerun from scratch.
+</details>
 
 ## The general question: a practice environment
 
-The AppWorld bug is one instance of a broader problem. If a simulator gets things wrong, does the score
-used for training still rank a good agent above a bad one? Getting individual responses right is not
-enough if the ranking comes out wrong, because the ranking is what training acts on.
+The AppWorld bug is one case of a broader question: when a simulator makes mistakes, does the training
+score still rank a good agent above a bad one? `worldcheck/env/` is a small online store built as real
+software (orders, refunds, notes, with the untidy data real systems accumulate), plus a fault injector
+that makes a simulated copy go wrong in six ways, three from the paper's Table 7. Nine simple agents
+run against both.
 
-To measure that directly, `worldcheck/env/` is a small online store built as real, runnable software:
-customers, orders, charges, refunds and notes. It has the untidy details real systems accumulate. A
-fault injector then makes a simulated copy of the store go wrong in six specific ways, three of them
-taken from the paper's Table 7. Nine simple scripted agents run against the real store and against
-each faulty copy, and the rankings are compared.
+With a correct simulator, a score shaped like `AppWorldReward` picks the right best agent. With one that
+behaves like the shipped AppWorld path, it scores an agent that reads one page exactly the same as one
+that reads everything (0.659 each), although the first fails 3 of 15 tasks in the real store.
 
-### The results, briefly
+<details>
+<summary>How it works and the full results</summary>
 
-- **With a correct simulator, the score picks the right agent.** Its top pick is also the best agent
-  in reality.
-- **With a simulator that behaves like the shipped AppWorld path,** meaning later pages empty and writes
-  acknowledged but never saved, the score rates an agent that reads one page exactly the same as one
-  that reads everything, 0.659 for both when they write the same way. In the real store the one-page
-  agent fails 3 of 15 tasks.
-- **The simulator causes this, not the score.** Grading the simulated runs perfectly shows the same
-  wrong top pick.
-- **The agent that checks its own work gets hurt most.** The simulator never shows a saved write, so
-  that agent retries. Replayed against the real store, those retries land as duplicate refunds, and
-  its tasks come out right 47% of the time, against 80-100% when it runs on the real store directly.
+**The store.** Eight tools over in-memory SQLite, integer cents, a clock that only moves on actions,
+snapshot and restore, an append-only audit log. Eight untidy fixtures: a partly refunded charge, a
+retried idempotency key, one customer with two accounts, a soft-deleted order the index still counts, a
+stale index total, an order just after local midnight, a pending charge, and a note mentioning a
+"Traceback" that the upstream score misreads as an error (`appworld_plugin.py:581`). Fifteen tasks,
+graded on the final database state.
 
-This is a statement about the measuring tool and these specific faults, not about any particular world
-model. A real model plugs in through one function, `observe(state_description, action)`.
+**Faults** change only what the agent sees: page 0 repeated, later pages empty, an invented record, a
+chat-wrapped response, writes acknowledged but not saved, reads that miss earlier writes. **A verifier**
+with seven checks catches every injected fault and stays silent on 135 episodes against the real store.
 
-### How it works
+**Agents** are every combination of how they page (page 0 only, until empty, by `total`) and how they
+write (once, check first, write then check), declared before any result. Each pair of agents either
+agrees with reality, collapses (reality separates them, the score doesn't), is spurious, or is
+reversed. Regret is how much worse in reality the score's top pick is than the true best.
 
-**The store.** Eight tools over an in-memory SQLite database, with money in integer cents, a clock that
-only moves when an action happens, snapshot and restore, and an append-only audit log. Pagination rules
-are written down once and enforced everywhere, since two layers disagreeing about pagination is where
-this project started.
+| Simulator | Agree | Collapse | Spurious | Reversed | Regret |
+|---|---|---|---|---|---|
+| Correct | 26 | 0 | 10 | 0 | 0.0 |
+| Later pages empty | 12 | 10 | 10 | 4 | 0.2 |
+| Page 0 repeated | 9 | 4 | 9 | 14 | 0.2 |
+| AppWorld-like | 15 | 14 | 5 | 2 | **0.2** |
 
-**Untidy data.** Eight fixtures, each one a place a simulator plausibly slips:
+A regret of 0.2 is three tasks out of fifteen. All eight simulators and every pair are in
+`results/calibration.json`. This measures the instrument and these faults, not any particular world
+model; a real one plugs in through one function.
 
-- a partly refunded charge, so the correct refund is the remainder, not the full amount;
-- a refund already recorded under an idempotency key that a task retries;
-- one customer with two accounts under the same email;
-- a soft-deleted order that the index still counts;
-- an index total taken before an order was cancelled;
-- an order placed just after midnight local time, which is the previous day in UTC;
-- a pending charge that must not be refunded;
-- a note in which a customer mentions pasting a "Traceback". The upstream reward counts any response
-  containing "traceback" as a failure (`appworld_plugin.py:581`), so this legitimate record is scored
-  as an error.
+</details>
 
-**Tasks.** Fifteen, graded on the final state of the database plus a check that nothing forbidden
-happened: exact-once refunds, counting across pages, telling similar records apart, and refusing
-writes the rules don't allow.
+## Limits
 
-**Faults.** Page 0 repeated for later pages, later pages empty, an invented record added, the response
-wrapped in a chat envelope, writes acknowledged but not saved, and reads that miss earlier writes. Each
-fault changes only what the agent sees, never the underlying database.
+- The training result is one small agent, scored in the simulator. A stronger agent might differ,
+  especially on the question tasks this one never answers.
+- Nothing here is about Patronus's hosted Digital World Model, only this repository.
+- The upstream rows are read from the pinned checkout at run time; this repo copies none of their data.
 
-**Verifier.** Seven checks that work from the declared state and the observations alone, so they apply
-to simulators we don't control. Each finding names the layer at fault. Every injected fault is caught
-by the check meant for it, and across 135 episodes of real agent traffic against the real store it
-raises nothing.
-
-**Agents.** Every combination of two choices, declared before any result was computed. Paging: read
-page 0 only, read until a page is empty, or read as many pages as `total` implies. Writing: write once,
-check the state first, or write and then read back and retry.
-
-**Comparison.** Each agent gets four scores. *Truth* is the real store, graded. *Training signal* is
-the simulator, scored by a reward shaped like `AppWorldReward`. *Shadow* is the simulated run's actions
-replayed against the real store, then graded. *Reward only* is the real store, scored by that reward.
-Two agents tie if their scores differ by less than half a task. Each of the 36 pairs either agrees with
-truth, collapses (truth separates them, the view doesn't), is spurious (truth ties them, the view
-doesn't), or is reversed. Regret is how much worse, in reality, the view's top pick is than the true
-best; when the view ties several agents at the top, the worst of them counts.
-
-The reward mirrors both branches of `AppWorldReward`, including its substring answer check. It leaves
-out the credential and argument-format penalties, since this store has no login step for them to act
-on.
-
-### Full results
-
-Training signal compared with truth, for each simulator (36 agent pairs):
-
-| Simulator | Agree | Collapse | Spurious | Reversed | Regret | Episodes the verifier flags |
-|---|---|---|---|---|---|---|
-| Correct | 26 | 0 | 10 | 0 | 0.0 | 0 of 135 |
-| Page 0 repeated | 9 | 4 | 9 | 14 | 0.2 | 42 of 135 |
-| Later pages empty | 12 | 10 | 10 | 4 | 0.2 | 24 of 135 |
-| Invented record | 13 | 9 | 11 | 3 | 0.2 | 111 of 135 |
-| Chat-wrapped responses | 36 | 0 | 0 | 0 | 0.0 | 135 of 135 |
-| Writes not saved | 31 | 0 | 5 | 0 | 0.0 | 27 of 135 |
-| Reads miss writes | 26 | 0 | 10 | 0 | 0.0 | 15 of 135 |
-| **AppWorld-like** (empty pages, writes not saved) | 15 | 14 | 5 | 2 | **0.2** | 51 of 135 |
-
-A regret of 0.2 is three tasks out of fifteen. The 10 spurious pairs under the correct simulator come
-from the reward, not the simulator: it prefers agents that avoid attempting a forbidden refund, while
-the real store simply rejects the attempt and the task still passes. Per-agent scores for every view,
-and the exact pairs in each class, are in `results/calibration.json`.
-
-## What is measured, and what isn't
-
-Measured, and reproduced offline from the upstream's own published rows: the corrupted observations,
-how much of the training data they reach, the reward's blindness to them, the answers it accepts, the
-guard ablation, and the practice-environment results. Measured on GPUs with their recipe: how often the
-bug fires during real training, and whether agents trained through the fixed plugin come out different
-(at this size, they don't).
-
-Not measured:
-
-- **Whether a stronger agent would differ.** The 1.2B agent never answers the question tasks, which is
-  where missing records should matter most. The paper also trains Qwen3-4B and Mistral-7B.
-- **Real AppWorld evaluation of the trained agents.** They were scored through the simulator.
-- **Whether a real world model follows the prompt's pagination rules.** The guard-off version uses a
-  stub, and in training the stand-in model was almost never reached.
-- **Anything about Patronus's hosted Digital World Model.** Everything here is about this repository.
-
-## Reproducing
+<details>
+<summary>Reproducing, and what's where</summary>
 
 ```sh
-PYTHONPATH=. .venv/bin/python -m worldcheck.repro          # page sweep, out-of-order pages, clamps, truncation
-PYTHONPATH=. .venv/bin/python -m worldcheck.reachability   # how much of the RL split is affected
+PYTHONPATH=. .venv/bin/python -m worldcheck.repro          # page sweep, out-of-order pages, clamps
+PYTHONPATH=. .venv/bin/python -m worldcheck.reachability   # how much of the training split is affected
 PYTHONPATH=. .venv/bin/python -m worldcheck.reward         # what AppWorldReward scores
 PYTHONPATH=. .venv/bin/python -m worldcheck.answers        # which answers it gives full credit
-PYTHONPATH=. .venv/bin/python -m worldcheck.ablation       # the three-version guard ablation
+PYTHONPATH=. .venv/bin/python -m worldcheck.ablation       # the responder ablation
 PYTHONPATH=. .venv/bin/python -m worldcheck.calibrate      # the practice-environment rankings
+python3 figures/make.py                                    # the charts, from results/
 ```
 
-Each writes its output to `results/`, so you can diff your run against the committed one.
-
-The upstream code runs with its real `json_repair` and `requests`. No world model is ever called:
-`call_world_model` is replaced with a function that raises, so a run fails if one is reached. The only
-thing substituted is four symbols imported from ms-swift, the training framework, which would otherwise
-pull in vLLM and a GPU stack. `tests/test_shim_fidelity.py` checks that substitute against ms-swift at
-commit `43b5d8e3d81493b30959d8ea2dc4c1ddb777e308`. It parses the real source for the dataclass fields,
-the `step` signature, the base class attributes, the arguments at every `self.step(...)` call and the
-`ret['infer_request']` hand-off. ms-swift is only ever parsed, never imported.
-
-This repo does not copy any upstream data. The RL rows are read from the pinned upstream checkout at
-run time.
+The upstream code runs unmodified with its real `json_repair` and `requests`. No world model is ever
+called: `call_world_model` is replaced with a function that raises. The only substitute is four symbols
+imported from ms-swift, checked against its source at `43b5d8e` by `tests/test_shim_fidelity.py`; ms-swift
+is parsed, never imported. The GPU arm is `gpu/grpo.py` (Modal) and `gpu/analyze.py`.
 
 | Path | What it is |
 |---|---|
-| `worldcheck/upstream.py` | Fetches both pinned repos and checks the ms-swift substitute against the real source |
-| `worldcheck/driver.py` | Drives the upstream scheduler one tool call at a time |
-| `worldcheck/repro.py`, `reachability.py`, `reward.py`, `answers.py`, `ablation.py` | The AppWorld measurements |
-| `worldcheck/fix.py` | The fix as exact-text replacements; `patches/` is generated from it |
-| `worldcheck/env/` | The practice store: engine, untidy fixtures, tasks and graders |
-| `worldcheck/sim/injector.py` | The six faults |
-| `worldcheck/verify.py` | The seven checks |
-| `worldcheck/policies.py`, `calibrate.py` | The nine agents and the ranking comparison |
-| `gpu/grpo.py`, `gpu/analyze.py` | The training and evaluation job on Modal, and its analysis |
+| `worldcheck/` | The AppWorld measurements, the fix, the practice store, faults, verifier and agents |
+| `gpu/` | The training and evaluation job, and its analysis |
+| `figures/` | The charts and the script that draws them |
+| `patches/` | The fix, generated from `worldcheck/fix.py` |
 | `results/` | Committed output of every command above |
-| `tests/` | Everything above, as tests |
+| `tests/` | All of the above, as tests |
+
+</details>
